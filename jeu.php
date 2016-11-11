@@ -9,7 +9,9 @@
     </head>
     <body>
         <h1>dans le jeu</h1>
+        <div id="plateau">
 
+        </div>
 
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
