@@ -4,7 +4,7 @@ class JeuController extends CI_Controller {
 
     function __construct(){
         parent::__construct();
-        //$this->load->model('jeumodel');
+        $this->load->model('jeumodel');
     }
 
     public function view($page = 'jeu')
