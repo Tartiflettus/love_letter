@@ -15,10 +15,8 @@ class JeuController extends CI_Controller {
             show_404();
         }*/
 
-        $data['title'] = ucfirst($page); // Capitalize the first letter
+        $data['title'] = "jeu";
 
-        $this->load->view('templates/header', $data);
         $this->load->view('pages/'.$page, $data);
-        $this->load->view('templates/footer', $data);
     }
 }
