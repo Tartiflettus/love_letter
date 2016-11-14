@@ -30,4 +30,9 @@ class JeuModel extends CI_Model {
             $i++;
         }
     }
+
+    function enregistrer($nom){
+        $q = $this->db->query("insert into joueurs values ($nom, '0.0.0.0 ', 0, 0, 0)");
+
+    }
 }

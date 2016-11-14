@@ -13,4 +13,10 @@ class AccueilController extends CI_Controller {
         //page d'authentification
         $this->load->view("pages/index");
     }
+
+    public function enregistrer(){
+        $nom = $_GET["nom"];
+        $this->jeumodel->enregistrer($nom);
+    }
+
 }
