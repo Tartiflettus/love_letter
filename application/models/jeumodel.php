@@ -52,8 +52,14 @@ class JeuModel extends CI_Model {
         $q = $this->db->query("select last_insert_id() as insert_id");
         return $q->row()->insert_id;
     }
-}
 
     function enregistrer($nom){
         $q = $this->db->query("update joueurs set nom=$nom where id_joueur=".$_SESSION["id"]);
     }
+
+    function getPartie(){
+        $q = $this->db->query("select num_partie from jeu");
+        return $q->row()->num_partie;
+    }
+}
+

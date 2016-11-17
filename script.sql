@@ -39,3 +39,7 @@ create table Carte (
 
 alter table Carte add constraint k_id check (id_carte>=0 and id_carte<18);
 
+
+
+insert into Jeu values (0, 0, NULL, NULL, NULL, NULL);
+
