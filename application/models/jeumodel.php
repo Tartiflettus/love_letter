@@ -16,23 +16,24 @@ class JeuModel extends CI_Model {
     }
 
     //piocher une carte dans la pioche
-    function piocher($nomJoueur){
-        assert(isset($idJoueur) && is_numeric($idJoueur) && 0 <= $idJoueur && $idJoueur <= 4);
-
-        $q = $this->db->query("select id from cartes");
+    function piocher(){
+        $q = $this->db->query("select id from cartes where num_partie=?", Array($_SESSION["num_partie"]));
         $indice = rand(0, $q->num_rows());
-        $i = 0;
-        foreach($q->result() as $row){
-            if($i == $indice){
-                $this->db->query("update cartes set statut='main' idMain=$idJoueur");
-                break;
-            }
-            $i++;
+
+        if($indice < $q->num_rows()) {
+            $this->db->query("update cartes set statut='main' idMain=? where id=?",
+                Array($_SESSION["id"], $q->row($indice)));
         }
     }
 
-    function enregistrer($nom){
-        $q = $this->db->query("insert into joueurs values ($nom, '0.0.0.0 ', 0, 0, 0)");
+    function ajouterJoueur(){
+        $q = $this->db->query("insert into joueurs values ('defaut', 0, 0)");
+        $q = $this->db->query("select last_insert_id() as insert_id");
+        return $q->row()->insert_id;
+    }
+}
 
+    function enregistrer($nom){
+        $q = $this->db->query("update joueurs set nom=$nom where id=".$_SESSION["id"]);
     }
 }

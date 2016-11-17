@@ -14,9 +14,11 @@ class AccueilController extends CI_Controller {
         $this->load->view("pages/index");
     }
 
-    public function enregistrer(){
-        $nom = $_GET["nom"];
+    public function enregistrer($nom){
         $this->jeumodel->enregistrer($nom);
+        echo "success";
     }
+
+    public function
 
 }
