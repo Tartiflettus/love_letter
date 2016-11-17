@@ -30,4 +30,12 @@ class JeuModel extends CI_Model {
             $i++;
         }
     }
+    
+    function joueurActuel(){
+        return $this->db->query("select joueur_actu from jeu where num_partie = ".$_SESSION['num_partie'].""); //a modifier pour num partie
+    }
+    
+    function tourDeManche(){
+        $joueurActu = joueurActuel(); 
+    }
 }
