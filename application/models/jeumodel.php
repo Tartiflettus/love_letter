@@ -16,9 +16,9 @@ class JeuModel extends CI_Model {
     }
 
     //piocher une carte dans la pioche
-    function piocher($idJoueur){
+    function piocher($nomJoueur){
         assert(isset($idJoueur) && is_numeric($idJoueur) && 0 <= $idJoueur && $idJoueur <= 4);
-        
+
         $q = $this->db->query("select id from cartes");
         $indice = rand(0, $q->num_rows());
         $i = 0;
