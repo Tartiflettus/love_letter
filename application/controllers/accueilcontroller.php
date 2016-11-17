@@ -9,16 +9,16 @@ class AccueilController extends CI_Controller {
     }
 
     public function index(){
+        $_SESSION["num_partie"] = $this->model->getPartie();
+        $data["num_partie"] = $_SESSION["num_partie"];
 
-        //page d'authentification
-        $this->load->view("pages/index");
+        $this->load->view("pages/index", $data);
     }
 
     public function enregistrer($nom){
-        $this->jeumodel->enregistrer($nom);
+        $this->model->enregistrer($nom);
         echo "success";
     }
 
-    public function
 
 }
