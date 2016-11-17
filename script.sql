@@ -1,6 +1,4 @@
 drop table Plateau;
-drop table Defausse;
-drop table Pioche;
 drop table Carte;
 drop table Joueurs;
 
@@ -13,19 +11,11 @@ create table Joueurs (
 );
 
 create table Carte (
-	id_carte int primary key,
-	valeur int not null,
+	id_carte int primary key, -- 0-17
+	valeur int not null, --1-8
 	statut varchar(10) not null default 'pioche',
-	main_joueur varchar(10) references Joueurs(nom),
-	pose_joueur varchar(10) references Joueurs(nom)
-);
-
-create table Pioche (
-	id_carte int references Carte(idCarte)
-);
-
-create table Defausse (
-	id_carte int references Carte(idCarte)
+	main_joueur varchar(10) references Joueurs(nom) null,
+	pose_joueur varchar(10) references Joueurs(nom) null
 );
 
 create table Plateau (
@@ -36,3 +26,22 @@ create table Plateau (
 );
 
 alter table Carte add constraint k_id check (id_carte>=0 and id_carte<18);
+
+insert into Carte (id_carte, valeur) values (0, 8);
+insert into Carte (id_carte, valeur) values (1, 7);
+insert into Carte (id_carte, valeur) values (2, 6);
+insert into Carte (id_carte, valeur) values (3, 5);
+insert into Carte (id_carte, valeur) values (4, 5);
+insert into Carte (id_carte, valeur) values (5, 4);
+insert into Carte (id_carte, valeur) values (6, 4);
+insert into Carte (id_carte, valeur) values (7, 3);
+insert into Carte (id_carte, valeur) values (8, 3);
+insert into Carte (id_carte, valeur) values (9, 2);
+insert into Carte (id_carte, valeur) values (10, 2);
+insert into Carte (id_carte, valeur) values (11, 1);
+insert into Carte (id_carte, valeur) values (12, 1);
+insert into Carte (id_carte, valeur) values (13, 1);
+insert into Carte (id_carte, valeur) values (14, 1);
+insert into Carte (id_carte, valeur) values (15, 1);
+
+
