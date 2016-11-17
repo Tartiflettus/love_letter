@@ -19,7 +19,8 @@ create table Jeu (
 	joueur_3 int references Joueurs(id),
 	joueur_4 int references Joueurs(id),
 	joueur_actu int Joueurs(id),
-	nb_joueurs int default 0
+	nb_joueurs int default 0,
+	carte_selec int 
 );
 
 

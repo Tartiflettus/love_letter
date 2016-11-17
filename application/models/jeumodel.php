@@ -17,7 +17,7 @@ class JeuModel extends CI_Model {
 
     //piocher une carte dans la pioche
     function piocher(){
-        $q = $this->db->query("select id from cartes where num_partie=?", Array($_SESSION["num_partie"]));
+        $q = $this->db->query("select id_carte from cartes where num_partie=?", Array($_SESSION["num_partie"]));
         $indice = rand(0, $q->num_rows());
 
         if($indice < $q->num_rows()) {
@@ -27,13 +27,25 @@ class JeuModel extends CI_Model {
     }
 
     
-    function joueurActuel(){
-        return $this->db->query("select joueur_actu from jeu where num_partie = ".$_SESSION['num_partie'].""); //a modifier pour num partie
+    function getJoueurActuel(){
+        $q = $this->db->query("select joueur_actu from jeu where num_partie = ".$_SESSION['num_partie']."");
+        return $q->row()->JoueurActu;
     }
     
-    function tourDeManche(){
-        $joueurActu = joueurActuel(); 
-
+    function passerJoueurSuivant(){
+        $nb_joueurs = $this->db->query("select nb_joueurs from jeu where num_partie=".$_SESSION['num_partie']."");
+        $q = $this->db->query("select joueur_actu from jeu where num_partie=".$_SESSION['num_partie']."");
+        if ($q >= $nb_joueurs - 1) {
+            $this->db->query("update jeu set joueur_actu=0 where num_partie=".$_SESSION['num_partie'] . "");
+        } else {
+            $this->db->query("update jeu set joueur_actu=joueur_actu+1 where num_partie=".$_SESSION['num_partie'] . "");
+        }
+    }
+    
+    function jouerCarte($id_joueur, $id_carte){
+       //a remplir avec règles
+        passerJoueurSuivant();
+    }
 
     function ajouterJoueur(){
         $q = $this->db->query("insert into joueurs values ('defaut', 0, 0)");
@@ -43,6 +55,5 @@ class JeuModel extends CI_Model {
 }
 
     function enregistrer($nom){
-        $q = $this->db->query("update joueurs set nom=$nom where id=".$_SESSION["id"]);
+        $q = $this->db->query("update joueurs set nom=$nom where id_joueur=".$_SESSION["id"]);
     }
-}
