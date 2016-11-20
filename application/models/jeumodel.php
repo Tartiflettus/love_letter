@@ -6,6 +6,9 @@
  * Time: 23:01
  */
 
+session_start();
+
+
 class JeuModel extends CI_Model {
     function getTaillePioche(){
         $this->db->query("select count(*) from cartes where statut='pioche'");
@@ -43,7 +46,7 @@ class JeuModel extends CI_Model {
     }
     
     function jouerCarte($id_joueur, $id_carte){
-       //a remplir avec règles
+       //a remplir avec rï¿½gles
         passerJoueurSuivant();
     }
 
@@ -59,7 +62,8 @@ class JeuModel extends CI_Model {
 
     function getPartie(){
         $q = $this->db->query("select num_partie from jeu");
-        return $q->row()->num_partie;
+        $_SESSION["num_partie"] =  $q->row()->num_partie;
+        return $_SESSION["num_partie"];
     }
 }
 
