@@ -27,6 +27,10 @@ class JeuModel extends CI_Model {
             $this->db->query("update cartes set statut='main' idMain=? where id=?",
                 Array($_SESSION["id"], $q->row($indice)));
         }
+        else{
+            http_response_code(500);
+            exit();
+        }
     }
 
     
@@ -57,6 +61,7 @@ class JeuModel extends CI_Model {
     }
 
     function enregistrer($nom){
+        //return "<strong>enregistrement</strong>";
         $q = $this->db->query("update joueurs set nom=$nom where id_joueur=".$_SESSION["id"]);
     }
 

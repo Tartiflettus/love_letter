@@ -17,7 +17,7 @@ class AccueilController extends CI_Controller {
     }
 
     public function enregistrer($nom){
-        $this->jeumodel->enregistrer($nom);
+        echo $this->jeumodel->enregistrer($nom);
         echo "success";
     }
 
