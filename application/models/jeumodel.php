@@ -55,9 +55,10 @@ class JeuModel extends CI_Model {
     }
 
     function ajouterJoueur(){
-        $q = $this->db->query("insert into joueurs values ('defaut', 0, 0)");
+        $q = $this->db->query("insert into joueurs (nom, points, elimine) values ('defaut', 0, 0)");
         $q = $this->db->query("select last_insert_id() as insert_id");
-        return $q->row()->insert_id;
+        $_SESSION["id"] = $q->row()->insert_id;
+        return $_SESSION["id"];
     }
 
     function enregistrer($nom){

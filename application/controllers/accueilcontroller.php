@@ -10,8 +10,11 @@ class AccueilController extends CI_Controller {
     }
 
     public function index(){
-        $_SESSION["num_partie"] = $this->jeumodel->getPartie();
+        $this->jeumodel->getPartie();
         $data["num_partie"] = $_SESSION["num_partie"];
+
+        $this->jeumodel->ajouterJoueur();
+        $data["id_joueur"] = $_SESSION["id"];
 
         $this->load->view("pages/index", $data);
     }

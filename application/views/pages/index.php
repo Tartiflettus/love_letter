@@ -6,6 +6,7 @@
     </head>
     <body>
         <p>Partie n°<?php echo $num_partie ?></p>
+        <p>Joueur n°<?php echo $id_joueur ?></p>
         <form action="localhost/love_letter/index.php/accueilcontroller/">
             <span id="msgErreur"></span>
             <label for="nomInput">nom</label><input id="nomInput" type="text" name="nom">
