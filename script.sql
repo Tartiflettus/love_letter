@@ -5,6 +5,7 @@ drop table Joueurs;
 
 create table Joueurs (
 	id int primary key auto_increment,
+	num_partie int references Jeu(num_partie),
 	nom varchar(20) default 'toto',
 	adresse varchar(10),
 	points int default 0,
@@ -19,8 +20,10 @@ create table Jeu (
 	joueur_3 int references Joueurs(id),
 	joueur_4 int references Joueurs(id),
 	joueur_actu int default 1,
+	manche int not null,
+	joueur_actu int references Joueurs(id),
 	nb_joueurs int default 0,
-	carte_selec int 
+	carte_selec int
 );
 
 
@@ -41,5 +44,5 @@ alter table Carte add constraint k_id check (id_carte>=0 and id_carte<18);
 
 
 
-insert into Jeu values (0, 0, NULL, NULL, NULL, NULL, 0, 0);
+insert into Jeu (manche) values (0);
 
