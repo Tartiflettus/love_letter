@@ -10,7 +10,7 @@ create table Joueurs (
 	adresse varchar(10),
 	points int default 0,
 	elimine int default 0,
-        num_joueur int
+    num_joueur int
 );
 
 create table Jeu (
@@ -19,7 +19,7 @@ create table Jeu (
 	joueur_actu int default 1,
 	nb_joueurs int default 0,
 	carte_selec int,
-        etat varchar(15) default 'pioche'
+    etat varchar(15) default 'pioche'
 );
 
 
