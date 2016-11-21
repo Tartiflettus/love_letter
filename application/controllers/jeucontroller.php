@@ -7,6 +7,7 @@ class JeuController extends CI_Controller {
     function __construct(){
         parent::__construct();
         $this->load->model('jeumodel');
+        $this->load->database();
     }
 
     public function view($page = 'jeu')
@@ -20,5 +21,12 @@ class JeuController extends CI_Controller {
         $data['title'] = "jeu";
 
         $this->load->view('pages/'.$page, $data);
+    }
+
+    public function test(){
+        $this->jeumodel->getPartie(); //obtenir session de num_partie
+        $this->jeumodel->ajouterJoueur();
+        $this->jeumodel->enregistrer("patate");
+        $this->jeumodel->lancerJeu();
     }
 }
