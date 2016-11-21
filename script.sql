@@ -23,7 +23,6 @@ create table Jeu (
 );
 
 
-
 create table Carte (
 	id_carte int primary key auto_increment,
 	valeur int not null, -- rang de la carte 1-8
