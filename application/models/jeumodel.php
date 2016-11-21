@@ -63,7 +63,7 @@ class JeuModel extends CI_Model {
 
     function enregistrer($nom){
         //return "<strong>enregistrement</strong>";
-        $q = $this->db->query("update joueurs set nom=? where id_joueur=?", Array($nom, $_SESSION["id"]));
+        $q = $this->db->query("update joueurs set nom=? where id=?", Array($nom, $_SESSION["id"]));
     }
 
     function getPartie(){
