@@ -25,11 +25,19 @@ class JeuController extends CI_Controller {
         $this->jeumodel->ajouterJoueur();
         $this->jeumodel->enregistrer("patate");
         $this->jeumodel->lancerJeu();
+
+        $this->testPioche();
+        $this->jeumodel->passerJoueurSuivant();
     }
 
 
     public function testPioche(){
-        if($this->jeumodel->getNumJoueurActuel() == $_SESSION["num_joueur"]);
+        if($this->jeumodel->getNumJoueurActuel() == $_SESSION["num_joueur"]){
+            $this->jeumodel->piocher();
+            echo "bien";
+        }else{
+            echo "pas bien";
+        }
     }
 
 }

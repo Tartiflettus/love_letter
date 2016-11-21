@@ -21,10 +21,11 @@ class JeuModel extends CI_Model {
     //piocher une carte dans la pioche
     function piocher() {
         $q = $this->db->query("select id_carte from carte where num_partie=? and statut = 'pioche'", Array($_SESSION["num_partie"]));
-        $indice = rand(0, $q->num_rows());
+        $indice = rand(0, $q->num_rows() - 1);
 
         if ($indice < $q->num_rows()) {
-            $this->db->query("update carte set statut='main' idMain=? where id=?", Array($_SESSION["id"], $q->row($indice)));
+            var_dump($this->db->query("update carte set statut='main', main_joueur=? where id_carte=?",
+                Array($_SESSION["id"], $q->row($indice)->id_carte) ) );
         } else {
             http_response_code(500);
             exit();
@@ -34,7 +35,7 @@ class JeuModel extends CI_Model {
     //renvoie le num�ro du joueur actuel entre 1 et 4
     function getNumJoueurActuel() {
         $q = $this->db->query("select joueur_actu from jeu where num_partie =?", Array($_SESSION["num_partie"]));
-        return $q->row()->JoueurActu;
+        return $q->row()->joueur_actu;
     }
 
     function passerJoueurSuivant() {
