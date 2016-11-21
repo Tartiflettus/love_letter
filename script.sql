@@ -1,6 +1,7 @@
-drop table Jeu;
-drop table Carte;
 drop table Joueurs;
+drop table Carte;
+drop table Jeu;
+
 
 
 create table Joueurs (

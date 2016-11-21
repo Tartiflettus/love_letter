@@ -146,13 +146,13 @@ class JeuModel extends CI_Model {
         $nb = $this->nbJoueurs();
         $q_joueurs = $this->db->query("select id from joueurs join jeu using(num_partie)");
 
-        for($i = 1; $i < $nb; $i++) {
+        for($i = 1; $i <= $nb; $i++) {
 
             $q = $this->db->query("select id_carte from carte where num_partie=? and statut = 'pioche'", Array($_SESSION["num_partie"]));
             $indice = rand(0, $q->num_rows());
 
             if ($indice < $q->num_rows()) {
-                $this->db->query("update carte set statut='main' main_joueur=? where id=?",
+                $this->db->query("update carte set statut='main', main_joueur=? where id_carte=?",
                     Array($q_joueurs->row($i)->id, $q->row($indice)->id_carte));
             } else {
                 http_response_code(500);
