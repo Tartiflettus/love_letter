@@ -17,15 +17,7 @@ class JeuModel extends CI_Model {
     function piocheEstVide(){
         return $this->getTaillePioche() == 0;
     }
-
-    function carteAleatoire(){
-        //retourne carte aléatoire
-    }
-    
-    function carteDefausseVisible(){
-        //mets en place la carte à dafausser visible
-    }
-    
+   
     //piocher une carte dans la pioche
     function piocher(){
         $q = $this->db->query("select id_carte from cartes where num_partie=? and statut = 'pioche'", Array($_SESSION["num_partie"]));
@@ -40,25 +32,26 @@ class JeuModel extends CI_Model {
             exit();
         }
     }
-
     
+    //renvoie le numéro du joueur actuel entre 1 et 4
     function getNumJoueurActuel(){
-        $q = $this->db->query("select joueur_actu from jeu where num_partie = ".$_SESSION['num_partie']."");
+        $q = $this->db->query("select joueur_actu from jeu where num_partie =?", Array($_SESSION["num_partie"]));
         return $q->row()->JoueurActu;
     }
     
     function passerJoueurSuivant(){
-        $nb_joueurs = $this->db->query("select nb_joueurs from jeu where num_partie=".$_SESSION['num_partie']."");
-        $q = $this->db->query("select joueur_actu from jeu where num_partie=".$_SESSION['num_partie']."");
+        $nb_joueurs = $this->db->query("select nb_joueurs from jeu where num_partie=?", Array($_SESSION["num_partie"]));
+        $q = $this->db->query("select joueur_actu from jeu where num_partie=?", Array($_SESSION["num_partie"]));
         if ($q >= $nb_joueurs) {
-            $this->db->query("update jeu set joueur_actu=1 where num_partie=".$_SESSION['num_partie'] . "");
+            $this->db->query("update jeu set joueur_actu=1 where num_partie=?", Array($_SESSION["num_partie"]));
         } else {
-            $this->db->query("update jeu set joueur_actu=joueur_actu+1 where num_partie=".$_SESSION['num_partie'] . "");
+            $this->db->query("update jeu set joueur_actu=joueur_actu+1 where num_partie=?", Array($_SESSION["num_partie"]));
         }
     }
     
     function jouerCarte($id_joueur, $id_carte){
        //a remplir avec rï¿½gles
+       $this->db->query("update carte set statut='pose' where pose_joueur=? and id_carte=?", $id_joueur, $id_carte);
        passerJoueurSuivant();
     }
 
@@ -107,40 +100,58 @@ class JeuModel extends CI_Model {
     }
     
     function deuxJoueurs(){
-        //defausser 3 cartes
+        for ($i=0; $i<=3; $i++){
+            $q = $this->db->query("select id_carte from cartes where num_partie=? and statut = 'pioche'", Array($_SESSION["num_partie"]));
+            $indice = rand(0, $q->num_rows());
+
+            if($indice < $q->num_rows()) {
+                $this->db->query("update cartes set statut='retire' where id=?",
+                                    Array($q->row($indice)));
+            }
+            else{
+                http_response_code(500);
+                exit();
+            }
+        }
     }
     
-    function jeu(){
-        echo '--------Ajout de joueurs--------\n\n';
-        
-        $this->db->query("insert into joueurs (nom) values ('dark21')");
-        $j1_id = $this->db->query("select last_insert_id()");
-        $j1_nom = $this->db->query("select nom from joueur where id=$j1_id");
-        $this->db->query("insert into joueurs (nom) values ('tartiflotte56')");
-        $j2_id = $this->db->query("select last_insert_id()");
-        $j2_nom = $this->db->query("select nom from joueur where id=$j2_id");
-        
-        echo 'Joueur 1 : id : $j1_id | nom : $j1_nom,_n\n';
-        echo 'Joueur 2 : id : $j2_id | nom : $j2_nom\n';
-        
-        echo '--------Création d une partie--------\n\n';
-        //defausser une carte visible 
-        $this->db->query("insert into jeu (joueur_1, joueur_2) values ($j1,$j2)");
-        $num_partie = $this->db->query("select last_insert_id()");
-        $manche = $this->db->query("select manche from jeu where num_partie = $num_partie");
-        $joueurActu = getNomJoueurActuel();        
-        
-        echo 'Num Partie : $num_partie\n';
-        echo 'Num Manche : $manche\n';
-        echo 'Joueur Actuel : $joueurActu\n';   
-        
-        echo '--------Passage au joueur suivant--------\n\n';
-        
-        passerJoueurSuivant();
-        
-        $joueurActu = getNomJoueurActuel();
-        
-        echo 'Joueur Actuel : $joueurActu\n';   
+    function defausseCarte(){
+        $q = $this->db->query("select id_carte from cartes where num_partie=? and statut = 'pioche'", Array($_SESSION["num_partie"]));
+            $indice = rand(0, $q->num_rows());
+
+            if($indice < $q->num_rows()) {
+                $this->db->query("delete from carte where id=?",
+                                    Array($q->row($indice)));
+            }
+            else{
+                http_response_code(500);
+                exit();
+            }
+    }
+    
+    function distribuerCartes(){
+            $q = $this->db->query("select id_carte from cartes where num_partie=? and statut = 'pioche'", Array($_SESSION["num_partie"]));
+            $indice = rand(0, $q->num_rows());
+
+            if($indice < $q->num_rows()) {
+                $this->db->query("update cartes set statut='main' main_joueur=? where id=?",
+                                  Array($_SESSION["id"]), Array($q->row($indice)));
+            }
+            else{
+                http_response_code(500);
+                exit();
+            }
+    }
+    
+    function lancerJeu(){
+        remplirCarte();
+        //joueur actuel : default 1
+        //manche : default 0
+        if(nbJoueurs() === 2){
+            deuxJoueurs();
+        }
+        carteDefausse();
+                
     }
 }
 
