@@ -18,9 +18,17 @@ class JeuModel extends CI_Model {
         return $this->getTaillePioche() == 0;
     }
 
+    function carteAleatoire(){
+        //retourne carte aléatoire
+    }
+    
+    function carteDefausseVisible(){
+        //mets en place la carte à dafausser visible
+    }
+    
     //piocher une carte dans la pioche
     function piocher(){
-        $q = $this->db->query("select id_carte from cartes where num_partie=?", Array($_SESSION["num_partie"]));
+        $q = $this->db->query("select id_carte from cartes where num_partie=? and statut = 'pioche'", Array($_SESSION["num_partie"]));
         $indice = rand(0, $q->num_rows());
 
         if($indice < $q->num_rows()) {
@@ -34,7 +42,7 @@ class JeuModel extends CI_Model {
     }
 
     
-    function getJoueurActuel(){
+    function getNumJoueurActuel(){
         $q = $this->db->query("select joueur_actu from jeu where num_partie = ".$_SESSION['num_partie']."");
         return $q->row()->JoueurActu;
     }
@@ -42,8 +50,8 @@ class JeuModel extends CI_Model {
     function passerJoueurSuivant(){
         $nb_joueurs = $this->db->query("select nb_joueurs from jeu where num_partie=".$_SESSION['num_partie']."");
         $q = $this->db->query("select joueur_actu from jeu where num_partie=".$_SESSION['num_partie']."");
-        if ($q >= $nb_joueurs - 1) {
-            $this->db->query("update jeu set joueur_actu=0 where num_partie=".$_SESSION['num_partie'] . "");
+        if ($q >= $nb_joueurs) {
+            $this->db->query("update jeu set joueur_actu=1 where num_partie=".$_SESSION['num_partie'] . "");
         } else {
             $this->db->query("update jeu set joueur_actu=joueur_actu+1 where num_partie=".$_SESSION['num_partie'] . "");
         }
@@ -51,7 +59,7 @@ class JeuModel extends CI_Model {
     
     function jouerCarte($id_joueur, $id_carte){
        //a remplir avec rï¿½gles
-        passerJoueurSuivant();
+       passerJoueurSuivant();
     }
 
     function ajouterJoueur(){
@@ -70,6 +78,69 @@ class JeuModel extends CI_Model {
         $q = $this->db->query("select num_partie from jeu");
         $_SESSION["num_partie"] =  $q->row()->num_partie;
         return $_SESSION["num_partie"];
+    }
+    
+    function getNomJoueurActuel(){
+        $num_joueur_actu = getJoueurActuel();
+        $join = $this->db->query("jeu join joueur using(joueur_1, joueur_2, joueur_3, joueur_4)");
+        $q = $this->db->query("select nom from joueur where nb_joueur=? and num_partie=?", $num_joueur_actu, Array($_SESSION["num_partie"]));
+        return $q->row()->nom;
+    }
+    
+    function remplirJeuCarte(){
+        $this->db->query("insert into carte (valeur, num_partie, image) values (8, ".$_SESSION['num_partie'].")", 'images_cartes/princess.png');
+        $this->db->query("insert into carte (valeur, num_partie, image) values (7, ".$_SESSION['num_partie'].")", 'images_cartes/countess.png');
+        $this->db->query("insert into carte (valeur, num_partie, image) values (6, ".$_SESSION['num_partie'].")", 'images_cartes/king.png');
+        $this->db->query("insert into carte (valeur, num_partie, image) values (5, ".$_SESSION['num_partie'].")", 'images_cartes/prince.png');
+        $this->db->query("insert into carte (valeur, num_partie, image) values (5, ".$_SESSION['num_partie'].")", 'images_cartes/prince.png');
+        $this->db->query("insert into carte (valeur, num_partie, image) values (4, ".$_SESSION['num_partie'].")", 'images_cartes/handmaid.png');
+        $this->db->query("insert into carte (valeur, num_partie, image) values (4, ".$_SESSION['num_partie'].")", 'images_cartes/handmaid.png');
+        $this->db->query("insert into carte (valeur, num_partie, image) values (3, ".$_SESSION['num_partie'].")", 'images_cartes/baron.png');
+        $this->db->query("insert into carte (valeur, num_partie, image) values (3, ".$_SESSION['num_partie'].")", 'images_cartes/baron.png');
+        $this->db->query("insert into carte (valeur, num_partie, image) values (2, ".$_SESSION['num_partie'].")", 'images_cartes/priest.png');
+        $this->db->query("insert into carte (valeur, num_partie, image) values (2, ".$_SESSION['num_partie'].")", 'images_cartes/priest.png');
+        $this->db->query("insert into carte (valeur, num_partie, image) values (1, ".$_SESSION['num_partie'].")", 'images_cartes/guard.png');
+        $this->db->query("insert into carte (valeur, num_partie, image) values (1, ".$_SESSION['num_partie'].")", 'images_cartes/guard.png');
+        $this->db->query("insert into carte (valeur, num_partie, image) values (1, ".$_SESSION['num_partie'].")", 'images_cartes/guard.png');
+        $this->db->query("insert into carte (valeur, num_partie, image) values (1, ".$_SESSION['num_partie'].")", 'images_cartes/guard.png');
+        $this->db->query("insert into carte (valeur, num_partie, image) values (1, ".$_SESSION['num_partie'].")", 'images_cartes/guard.png');     
+    }
+    
+    function deuxJoueurs(){
+        //defausser 3 cartes
+    }
+    
+    function jeu(){
+        echo '--------Ajout de joueurs--------\n\n';
+        
+        $this->db->query("insert into joueurs (nom) values ('dark21')");
+        $j1_id = $this->db->query("select last_insert_id()");
+        $j1_nom = $this->db->query("select nom from joueur where id=$j1_id");
+        $this->db->query("insert into joueurs (nom) values ('tartiflotte56')");
+        $j2_id = $this->db->query("select last_insert_id()");
+        $j2_nom = $this->db->query("select nom from joueur where id=$j2_id");
+        
+        echo 'Joueur 1 : id : $j1_id | nom : $j1_nom,_n\n';
+        echo 'Joueur 2 : id : $j2_id | nom : $j2_nom\n';
+        
+        echo '--------Création d une partie--------\n\n';
+        //defausser une carte visible 
+        $this->db->query("insert into jeu (joueur_1, joueur_2) values ($j1,$j2)");
+        $num_partie = $this->db->query("select last_insert_id()");
+        $manche = $this->db->query("select manche from jeu where num_partie = $num_partie");
+        $joueurActu = getNomJoueurActuel();        
+        
+        echo 'Num Partie : $num_partie\n';
+        echo 'Num Manche : $manche\n';
+        echo 'Joueur Actuel : $joueurActu\n';   
+        
+        echo '--------Passage au joueur suivant--------\n\n';
+        
+        passerJoueurSuivant();
+        
+        $joueurActu = getNomJoueurActuel();
+        
+        echo 'Joueur Actuel : $joueurActu\n';   
     }
 }
 

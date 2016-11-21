@@ -13,12 +13,12 @@ create table Joueurs (
 
 create table Jeu (
 	num_partie int primary key auto_increment,
-	manche int not null,
+	manche int not null default 0,
 	joueur_1 int references Joueurs(id),
 	joueur_2 int references Joueurs(id),
 	joueur_3 int references Joueurs(id),
 	joueur_4 int references Joueurs(id),
-	joueur_actu int references Joueurs(id),
+	joueur_actu int default 1,
 	nb_joueurs int default 0,
 	carte_selec int 
 );
