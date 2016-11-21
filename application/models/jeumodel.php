@@ -17,7 +17,7 @@ class JeuModel extends CI_Model {
     function piocheEstVide(){
         return $this->getTaillePioche() == 0;
     }
-   
+
     //piocher une carte dans la pioche
     function piocher(){
         $q = $this->db->query("select id_carte from cartes where num_partie=? and statut = 'pioche'", Array($_SESSION["num_partie"]));
@@ -56,8 +56,16 @@ class JeuModel extends CI_Model {
     }
 
     function ajouterJoueur(){
-        $q = $this->db->query("insert into joueurs (nom, points, elimine, num_partie) values ('defaut', 0, 0, ?)", Array($_SESSION["num_partie"]));
-        $q = $this->db->query("select last_insert_id() as insert_id");
+        //mettre à jour le nombre de joueurs du jeu
+        $q = $this->db->query("update jeu set nb_joueurs=nb_joueurs+1 where num_partie=?", Array($_SESSION["num_partie"]));
+        $q = $this->db->query("select nb_joueurs from jeu where num_partie=?", Array($_SESSION["id"]));
+
+        $nb = $q->row()->nb_joueurs;
+
+        //ajouter effectivement le joueur
+        $q = $this->db->query("insert into joueurs (nom, points, elimine, num_partie, num_joueur) values ('defaut', 0, 0, ?, ?)",
+            Array($_SESSION["num_partie"], $nb));
+        $q = $this->db->query("select last_insert_id() as insert_id"); //récupérer son id
         $_SESSION["id"] = $q->row()->insert_id;
         return $_SESSION["id"];
     }
@@ -114,7 +122,14 @@ class JeuModel extends CI_Model {
             }
         }
     }
-    
+
+
+    function nbJoueurs(){
+        $q = $this->db->query("select count(*) as nb from joueurs join jeu using(num_partie) where num_partie=?",
+            Array($_SESSION["num_partie"]));
+        return $q->row()->nb;
+    }
+        
     function defausseCarte(){
         $q = $this->db->query("select id_carte from cartes where num_partie=? and statut = 'pioche'", Array($_SESSION["num_partie"]));
             $indice = rand(0, $q->num_rows());
@@ -151,7 +166,6 @@ class JeuModel extends CI_Model {
             deuxJoueurs();
         }
         carteDefausse();
-                
     }
 }
 
