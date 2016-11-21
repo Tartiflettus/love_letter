@@ -50,10 +50,9 @@ class JeuModel extends CI_Model {
         }
     }
 
-    function jouerCarte($id_joueur, $id_carte) {
-        //a remplir avec r�gles
-        $this->db->query("update carte set statut='pose' where pose_joueur=? and id_carte=?", $id_joueur, $id_carte);
-        $this->passerJoueurSuivant();
+    function jouerCarte($id_carte) {
+        $this->db->query("update carte set statut='pose', pose_joueur=? where id_carte=?",
+            Array($_SESSION["id"], $id_carte));
     }
 
     function ajouterJoueur() {
@@ -114,7 +113,7 @@ class JeuModel extends CI_Model {
 
     function deuxJoueurs() {
         for ($i = 0; $i <= 3; $i++) {
-            $q = $this->db->query("select id_carte from cartes where num_partie=? and statut = 'pioche'", Array($_SESSION["num_partie"]));
+            $q = $this->db->query("select id_carte from carte where num_partie=? and statut = 'pioche'", Array($_SESSION["num_partie"]));
             $indice = rand(0, $q->num_rows());
 
             if ($indice < $q->num_rows()) {
@@ -144,14 +143,22 @@ class JeuModel extends CI_Model {
     }
 
     function distribuerCartes() {
-        $q = $this->db->query("select id_carte from cartes where num_partie=? and statut = 'pioche'", Array($_SESSION["num_partie"]));
-        $indice = rand(0, $q->num_rows());
+        $nb = $this->nbJoueurs();
+        $q_joueurs = $this->db->query("select id from joueurs join jeu using(num_partie)");
 
-        if ($indice < $q->num_rows()) {
-            $this->db->query("update carte set statut='main' main_joueur=? where id=?", Array($_SESSION["id"]), Array($q->row($indice)));
-        } else {
-            http_response_code(500);
-            exit();
+        for($i = 1; $i < $nb; $i++) {
+
+            $q = $this->db->query("select id_carte from carte where num_partie=? and statut = 'pioche'", Array($_SESSION["num_partie"]));
+            $indice = rand(0, $q->num_rows());
+
+            if ($indice < $q->num_rows()) {
+                $this->db->query("update carte set statut='main' main_joueur=? where id=?",
+                    Array($q_joueurs->row($i)->id, $q->row($indice)->id_carte));
+            } else {
+                http_response_code(500);
+                exit();
+            }
+
         }
     }
 
@@ -163,6 +170,7 @@ class JeuModel extends CI_Model {
             $this->deuxJoueurs();
         }
         $this->defausseCarte();
+        $this->distribuerCartes();
     }
 
 }

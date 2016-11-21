@@ -27,6 +27,12 @@ class JeuController extends CI_Controller {
         $this->jeumodel->lancerJeu();
 
         $this->testPioche();
+
+        //sélectionner la carte à poser
+        $q = $this->db->query("select id_carte from carte where main_joueur=?",
+            Array($_SESSION["id"]));
+
+        $this->jeumodel->jouerCarte($q->row()->id_carte);
         $this->jeumodel->passerJoueurSuivant();
     }
 
