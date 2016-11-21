@@ -18,7 +18,8 @@ create table Jeu (
 	manche int not null default 0,
 	joueur_actu int default 1,
 	nb_joueurs int default 0,
-	carte_selec int
+	carte_selec int,
+        etat varchar(15) default 'pioche'
 );
 
 
