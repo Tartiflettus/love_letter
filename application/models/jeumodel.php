@@ -67,7 +67,7 @@ class JeuModel extends CI_Model {
         $q = $this->db->query("update jeu set nb_joueurs=nb_joueurs+1 where num_partie=?", Array($_SESSION["num_partie"]));
         $q = $this->db->query("select nb_joueurs from jeu where num_partie=?", Array($_SESSION["id"]));
 
-        $nb = $q->row()->nb_joueurs - 1;
+        $nb = $q->row()->nb_joueurs;
 
         //ajouter effectivement le joueur
         $q = $this->db->query("insert into joueurs (nom, points, elimine, num_partie, num_joueur) values ('defaut', 0, 0, ?, ?)",
