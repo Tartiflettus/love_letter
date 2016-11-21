@@ -117,6 +117,14 @@ class JeuModel extends CI_Model {
     function deuxJoueurs(){
         //defausser 3 cartes
     }
+
+
+    function nbJoueurs(){
+        $q = $this->db->query("select count(*) as nb from joueurs join jeu using(num_partie) where num_partie=?",
+            Array($_SESSION["num_partie"]));
+        return $q->row()->nb;
+    }
+
     
     function jeu(){
         echo '--------Ajout de joueurs--------\n\n';
