@@ -8,7 +8,7 @@ class JeuController extends CI_Controller {
         $this->load->database();
     }
 
-    public function view($page = 'jeu') {
+    public function view() {
         /* if ( ! file_exists(APPPATH.'views/pages/'.$page.'.php'))
           {
           // Whoops, we don't have a page for that!
@@ -17,7 +17,7 @@ class JeuController extends CI_Controller {
 
         $data['title'] = "jeu";
 
-        $this->load->view('pages/' . $page, $data);
+        $this->load->view('pages/jeu.php', $data);
     }
 
     public function test() {

@@ -3,15 +3,12 @@
     <head>
         <meta charset="UTF-8">
         <title><?php echo $title ?></title>
-        <link rel="stylesheet" href="../../../styles/jeu.css" />
+        <link rel="stylesheet" href="<?php echo base_url() ?>styles/jeu.css" />
     </head>
     <body>
         <h1>Jeu</h1>
 
-        <!-- pioche -->
-        <div id="piocheDiv">
-            18
-        </div>
+
     </body>
 </html>
 
