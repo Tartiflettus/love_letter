@@ -1,3 +1,4 @@
+# noinspection SqlNoDataSourceInspectionForFile
 drop table Joueurs;
 drop table Carte;
 drop table Jeu;
@@ -31,8 +32,7 @@ create table Carte (
 	statut varchar(10) not null default 'pioche', /*peut prendre valeurs : 
 													pioche, defausse, carte(1,2,3),
 													main, pose*/
-	main_joueur varchar(10) null references Joueurs(id),
-	pose_joueur varchar(10) null references Joueurs(id),
+	joueur int null references Joueurs(id),
 	image varchar(100) null
 );
 
