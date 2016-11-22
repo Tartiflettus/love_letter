@@ -1,3 +1,4 @@
+# noinspection SqlNoDataSourceInspectionForFile
 drop trigger trigger_joueurs;
 delimiter |
 create trigger trigger_joueurs before insert 

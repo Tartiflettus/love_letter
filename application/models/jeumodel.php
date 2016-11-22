@@ -173,4 +173,10 @@ class JeuModel extends CI_Model {
         $this->distribuerCartes();
     }
 
+
+    function getMain(){
+        $q = $this->db->query("select id_carte, image from joueurs join carte using(id_joueur) where id=?",
+            Array($_SESSION["id"]));
+        return $q->result();
+    }
 }
