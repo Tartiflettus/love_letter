@@ -185,4 +185,16 @@ class JeuModel extends CI_Model {
             Array($_SESSION["id"]));
         return $q->result();
     }
+
+    //récupère le nombre de cartes dans la main du joueur sépéré par $numJoueur de vous
+    function getMainAutres($numJoueur){
+        //il faut le nombre de joueurs
+        $q = $this->db->query("select nb_joueurs from jeu where num_partie=?", Array($_SESSION["num_partie"]));
+        $nb = $q->row()->nb_joueurs;
+
+        $q = $this->db->query("select count(*) as cnt from carte join joueurs on(carte.joueur=joueurs.id) where statut='main' and id=?",
+            Array(($_SESSION["num_joueur"] + $numJoueur) % $nb) );
+
+        return $q->row()->cnt;
+    }
 }
