@@ -16,6 +16,8 @@ class JeuController extends CI_Controller {
           } */
 
         $data['title'] = "jeu";
+        $data["main"] = $this->jeumodel->getMain();
+        $data["pose"] = $this->jeumodel->getPose();
 
         $this->load->view('pages/jeu.php', $data);
     }
