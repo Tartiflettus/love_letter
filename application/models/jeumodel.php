@@ -175,7 +175,13 @@ class JeuModel extends CI_Model {
 
 
     function getMain(){
-        $q = $this->db->query("select id_carte, image from joueurs join carte using(id_joueur) where id=?",
+        $q = $this->db->query("select id_carte, image from joueurs join carte on(carte.joueur=joueurs.id) where id=? and statut='main'",
+            Array($_SESSION["id"]));
+        return $q->result();
+    }
+
+    function getPose(){
+        $q = $this->db->query("select id_carte, image from joueurs join carte on(carte.joueur=joueurs.id) where id=? and statut='pose'",
             Array($_SESSION["id"]));
         return $q->result();
     }
