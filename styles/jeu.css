@@ -3,3 +3,22 @@
     border: thick;
     border-color: black;
 }
+
+img {
+    width:150px;
+}
+
+div#bas {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+div#bas img {
+    text-align: center;
+}
+
+td {
+    /*border-style: thick !important; */
+    border: 1px thick !important;
+}
