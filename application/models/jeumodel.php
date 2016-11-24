@@ -245,9 +245,10 @@ class JeuModel extends CI_Model {
 
         switch($etat){
             case "pioche":
+                $this->piocher();
                 break;
-            case "pose":
-                break;
+            /*case "pose":
+                break;*/
             default:
                 return;
         }
