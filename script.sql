@@ -18,7 +18,7 @@ create table Joueurs (
 create table Jeu (
 	num_partie int primary key auto_increment,
 	manche int not null default 0,
-	joueur_actu int default 1,
+	joueur_actu int default 0,
 	nb_joueurs int default 0,
 	carte_selec int,
 	etat varchar(15) default 'pioche'
@@ -37,7 +37,8 @@ create table Carte (
 );
 
 alter table Carte add constraint k_id check (id_carte>=1 and id_carte<=16);
-
+alter table Joueurs add constraint k_num_joueur check (num_joueur>=0 and num_joueur<=3);
+alter table Jeu add constraint k_nb_joueurs check (nb_joueurs>=0 and nb_joueurs<=4);
 
 
 insert into Jeu (manche) values (0);

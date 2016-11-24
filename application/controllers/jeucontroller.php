@@ -31,7 +31,7 @@ class JeuController extends CI_Controller {
 
         //second joueur
         $q = $this->db->query("insert into joueurs (nom, points, elimine, num_partie, num_joueur) values ('reblochon', 0, 0, ?, ?)",
-            Array($_SESSION["num_partie"], 2));
+            Array($_SESSION["num_partie"], 1));
         $this->db->query("update jeu set nb_joueurs=nb_joueurs+1 where num_partie=?",
             Array($_SESSION["num_partie"]));
 
@@ -45,7 +45,8 @@ class JeuController extends CI_Controller {
 
         $this->jeumodel->jouerCarte($q->row()->id_carte);
         $this->jeumodel->passerJoueurSuivant();
-        $res = $this->jeumodel->getMainAutres(1);
+        var_dump($this->jeumodel->getMainAutres(1));
+        var_dump($this->jeumodel->getPoseAutres(0));
     }
 
 

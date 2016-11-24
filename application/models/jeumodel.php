@@ -43,8 +43,8 @@ class JeuModel extends CI_Model {
         $nb_joueurs = $nbJ->row()->nb_joueurs;
         $q = $this->db->query("select joueur_actu from jeu where num_partie=?", Array($_SESSION["num_partie"]));
         $jA = $q->row()->joueur_actu;
-        if ($jA >= $nb_joueurs) {
-            $this->db->query("update jeu set joueur_actu=1 where num_partie=?", Array($_SESSION["num_partie"]));
+        if ($jA == $nb_joueurs-1) {
+            $this->db->query("update jeu set joueur_actu=0 where num_partie=?", Array($_SESSION["num_partie"]));
         } else {
             $this->db->query("update jeu set joueur_actu=joueur_actu+1 where num_partie=?", Array($_SESSION["num_partie"]));
         }
@@ -63,12 +63,13 @@ class JeuModel extends CI_Model {
 
         echo "num_partie : ".$_SESSION["num_partie"];
         $nb = $q->row()->nb_joueurs;
-        $_SESSION["num_joueur"] = $nb;
+        $_SESSION["num_joueur"] = $nb-1;
         echo "<br/>num_joueur : ".$_SESSION["num_joueur"];
 
 
         //ajouter effectivement le joueur
-        $q = $this->db->query("insert into joueurs (nom, points, elimine, num_partie, num_joueur) values ('defaut', 0, 0, ?, ?)", Array($_SESSION["num_partie"], $nb));
+        $q = $this->db->query("insert into joueurs (nom, points, elimine, num_partie, num_joueur) values ('defaut', 0, 0, ?, ?)",
+            Array($_SESSION["num_partie"], $nb-1));
         $q = $this->db->query("select last_insert_id() as insert_id"); //récupérer son id
         $_SESSION["id"] = $q->row()->insert_id;
         return $_SESSION["id"];
@@ -190,15 +191,30 @@ class JeuModel extends CI_Model {
         return $q->result();
     }
 
-    //récupère le nombre de cartes dans la main du joueur sépéré par $numJoueur de vous
-    function getMainAutres($numJoueur){
+
+    //helper pour getMainautres et getPoseAutres
+    private function getXAutres($numJoueur, $statut){
         //il faut le nombre de joueurs
         $q = $this->db->query("select nb_joueurs from jeu where num_partie=?", Array($_SESSION["num_partie"]) );
         $nb = $q->row()->nb_joueurs;
 
-        $q = $this->db->query("select id_carte from carte join joueurs on(carte.joueur=joueurs.id) where statut='main' and id=?",
-            Array((($_SESSION["num_joueur"] + $numJoueur) % $nb)+1) );
+        //on cherche l'id du joueur à $numJoueur de distance de nous
+        $q = $this->db->query("select id from joueurs join jeu using(num_partie) where num_joueur=?",
+            Array(($_SESSION["num_joueur"] + $numJoueur) % $nb) );
+        $idCible = $q->row()->id;
+
+        $q = $this->db->query("select id_carte from carte join joueurs on(carte.joueur=joueurs.id) where statut=? and id=?",
+            Array($statut, $idCible) );
 
         return $q->result();
+    }
+
+    //récupère le nombre de cartes dans la main du joueur sépéré par $numJoueur de vous
+    function getMainAutres($numJoueur){
+        return $this->getXAutres($numJoueur, "main");
+    }
+
+    function getPoseAutres($numJoueur){
+        return $this->getXAutres($numJoueur, "pose");
     }
 }
