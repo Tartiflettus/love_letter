@@ -19,6 +19,7 @@ class JeuController extends CI_Controller {
         $data["main"] = $this->jeumodel->getMain();
         $data["pose"] = $this->jeumodel->getPose();
         $data["retires"] = $this->jeumodel->getRetires();
+        $data["main1"] = $this->jeumodel->getMainAutres(1);
         
         $this->load->view('pages/jeu.php', $data);
     }
@@ -67,6 +68,10 @@ class JeuController extends CI_Controller {
         $this->jeumodel->action($arg1);
 
         $this->view();
+    }
+    
+    public function testAjax(){
+        echo 'coucou';
     }
 
 }
