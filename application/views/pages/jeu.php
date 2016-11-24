@@ -8,12 +8,14 @@
 <body>
     <h1>Jeu</h1>
     <?php
+    
     $tailleMain = count($main);
     $taillePose = count($pose);
+    $tailleMilieu = count($retires);
+    
     ?>
     <div id="bas" border="1">
         <table>
-
             <tr>
                 <?php
                 if ($tailleMain != 0) {
@@ -33,14 +35,27 @@
                 }
                 ?>
             </tr>
-            
-
         </table>
     </div>
+    
+    <div id="milieu" border="1">
+        <table>
+            <tr>
+                <?php
+                if ($tailleMilieu != 0) {
+                    for ($i = 0; $i < $tailleMain; $i++) {
+                        echo '<td><img src="' . base_url($retires[$i]->image) . '" name="' . $retires[0]->id_carte . '"/></td>';
+                    }
+                }
+                ?>
+
+            </tr>
+           </table>
+    </div>
+    
     <script>
         function poserCarte() {
-            //appeler poserCarte modele
-            alert("coucou");
+            
         }
     </script>
 </body>
