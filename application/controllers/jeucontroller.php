@@ -16,14 +16,25 @@ class JeuController extends CI_Controller {
           } */
 
         $data['title'] = "jeu";
+        $data["main"] = $this->jeumodel->getMain();
+        $data["pose"] = $this->jeumodel->getPose();
 
         $this->load->view('pages/jeu.php', $data);
     }
 
     public function test() {
         $this->jeumodel->getPartie(); //obtenir session de num_partie
+
+        //premier joueur
         $this->jeumodel->ajouterJoueur();
         $this->jeumodel->enregistrer("patate");
+
+        //second joueur
+        $q = $this->db->query("insert into joueurs (nom, points, elimine, num_partie, num_joueur) values ('reblochon', 0, 0, ?, ?)",
+            Array($_SESSION["num_partie"], 1));
+        $this->db->query("update jeu set nb_joueurs=nb_joueurs+1 where num_partie=?",
+            Array($_SESSION["num_partie"]));
+
         $this->jeumodel->lancerJeu();
 
         $this->testPioche();
@@ -34,6 +45,8 @@ class JeuController extends CI_Controller {
 
         $this->jeumodel->jouerCarte($q->row()->id_carte);
         $this->jeumodel->passerJoueurSuivant();
+        var_dump($this->jeumodel->getMainAutres(1));
+        var_dump($this->jeumodel->getPoseAutres(0));
     }
 
 
