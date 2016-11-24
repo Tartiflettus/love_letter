@@ -24,8 +24,8 @@ class JeuModel extends CI_Model {
         $indice = rand(0, $q->num_rows() - 1);
 
         if ($indice < $q->num_rows()) {
-            var_dump($this->db->query("update carte set statut='main', joueur=? where id_carte=?",
-                Array($_SESSION["id"], $q->row($indice)->id_carte) ) );
+            /*var_dump(*/$this->db->query("update carte set statut='main', joueur=? where id_carte=?",
+                Array($_SESSION["id"], $q->row($indice)->id_carte) ) /*)*/;
         } else {
             http_response_code(500);
             exit();
@@ -112,9 +112,9 @@ class JeuModel extends CI_Model {
     }
 
     function deuxJoueurs() {
-        for ($i = 0; $i <= 3; $i++) {
+        for ($i = 0; $i < 3; $i++) {
             $q = $this->db->query("select id_carte from carte where num_partie=? and statut = 'pioche'", Array($_SESSION["num_partie"]));
-            $indice = rand(0, $q->num_rows());
+            $indice = rand(0, $q->num_rows()-1);
 
             if ($indice < $q->num_rows()) {
                 $this->db->query("update carte set statut='retire' where id=?", Array($q->row($indice)));
@@ -126,13 +126,13 @@ class JeuModel extends CI_Model {
     }
 
     function nbJoueurs() {
-        $q = $this->db->query("select count(*) as nb from joueurs join jeu using(num_partie) where num_partie=?", Array($_SESSION["num_partie"]));
-        return $q->row()->nb;
+        $q = $this->db->query("select nb_joueurs from jeu where num_partie=?", Array($_SESSION["num_partie"]));
+        return $q->row()->nb_joueurs;
     }
 
     function defausseCarte() {
         $q = $this->db->query("select id_carte from carte where num_partie=? and statut = 'pioche'", Array($_SESSION["num_partie"]));
-        $indice = rand(0, $q->num_rows());
+        $indice = rand(0, $q->num_rows()-1);
 
         if ($indice < $q->num_rows()) {
             $this->db->query("delete from carte where id_carte=?", Array($q->row($indice)->id_carte));
@@ -144,17 +144,20 @@ class JeuModel extends CI_Model {
 
     function distribuerCartes() {
         $nb = $this->nbJoueurs();
-        $q_joueurs = $this->db->query("select id from joueurs join jeu using(num_partie)");
+        $q_joueurs = $this->db->query("select id from joueurs join jeu using(num_partie) where num_partie=?",
+            Array($_SESSION["num_partie"]));
 
         for($i = 1; $i <= $nb; $i++) {
 
             $q = $this->db->query("select id_carte from carte where num_partie=? and statut = 'pioche'", Array($_SESSION["num_partie"]));
-            $indice = rand(0, $q->num_rows());
+            $indice = rand(0, $q->num_rows()-1);
 
             if ($indice < $q->num_rows()) {
                 $this->db->query("update carte set statut='main', joueur=? where id_carte=?",
-                    Array($q_joueurs->row($i)->id, $q->row($indice)->id_carte));
+                    Array($q_joueurs->row($i-1)->id, $q->row($indice)->id_carte));
+                //echo "bon nombre aléatoire";
             } else {
+                //echo "mauvais nombre aléatoire";
                 http_response_code(500);
                 exit();
             }
@@ -168,6 +171,7 @@ class JeuModel extends CI_Model {
         //manche : default 0
         if ($this->nbJoueurs() === 2) {
             $this->deuxJoueurs();
+            echo "mode 2 joueurs séléctionné";
         }
         $this->defausseCarte();
         $this->distribuerCartes();
@@ -189,12 +193,12 @@ class JeuModel extends CI_Model {
     //récupère le nombre de cartes dans la main du joueur sépéré par $numJoueur de vous
     function getMainAutres($numJoueur){
         //il faut le nombre de joueurs
-        $q = $this->db->query("select nb_joueurs from jeu where num_partie=?", Array($_SESSION["num_partie"]));
+        $q = $this->db->query("select nb_joueurs from jeu where num_partie=?", Array($_SESSION["num_partie"]) );
         $nb = $q->row()->nb_joueurs;
 
-        $q = $this->db->query("select count(*) as cnt from carte join joueurs on(carte.joueur=joueurs.id) where statut='main' and id=?",
-            Array(($_SESSION["num_joueur"] + $numJoueur) % $nb) );
+        $q = $this->db->query("select id_carte from carte join joueurs on(carte.joueur=joueurs.id) where statut='main' and id=?",
+            Array((($_SESSION["num_joueur"] + $numJoueur) % $nb)+1) );
 
-        return $q->row()->cnt;
+        return $q->result();
     }
 }
