@@ -47,6 +47,8 @@ class JeuController extends CI_Controller {
         $this->jeumodel->passerJoueurSuivant();
         var_dump($this->jeumodel->getMainAutres(1));
         var_dump($this->jeumodel->getPoseAutres(0));
+        var_dump($this->jeumodel->getRetires());
+        var_dump($this->jeumodel->getNbCartesPioche());
     }
 
 
