@@ -203,7 +203,7 @@ class JeuModel extends CI_Model {
             Array(($_SESSION["num_joueur"] + $numJoueur) % $nb) );
         $idCible = $q->row()->id;
 
-        $q = $this->db->query("select id_carte from carte join joueurs on(carte.joueur=joueurs.id) where statut=? and id=?",
+        $q = $this->db->query("select id_carte, image from carte join joueurs on(carte.joueur=joueurs.id) where statut=? and id=?",
             Array($statut, $idCible) );
 
         return $q->result();
@@ -216,5 +216,9 @@ class JeuModel extends CI_Model {
 
     function getPoseAutres($numJoueur){
         return $this->getXAutres($numJoueur, "pose");
+    }
+
+    function getRetires(){
+        $q = $this->db->query("select id_carte, image from carte join jeu using()");
     }
 }
