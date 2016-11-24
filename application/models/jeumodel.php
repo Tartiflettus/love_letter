@@ -230,6 +230,9 @@ class JeuModel extends CI_Model {
         return $q->row()->cnt;
     }
 
+    function poser($idCarte){
+        $this->db->query();
+    }
 
     //fonction principale, dont le comportement dépends de l'état du jeu
     function action($arg1){
@@ -247,8 +250,9 @@ class JeuModel extends CI_Model {
             case "pioche":
                 $this->piocher();
                 break;
-            /*case "pose":
-                break;*/
+            case "pose":
+                $this->poser($arg1);
+                break;
             default:
                 return;
         }

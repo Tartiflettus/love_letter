@@ -62,6 +62,9 @@ class JeuController extends CI_Controller {
     public function action($arg1 = "rien"){
         $this->jeumodel->action($arg1);
 
+        //echo "Location : ".base_url()."index.php/jeucontroller/view";
+        //header("Location : ".base_url()."index.php/jeucontroller/view");
+        //exit();
         $this->view();
     }
     
