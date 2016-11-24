@@ -64,7 +64,7 @@ class JeuController extends CI_Controller {
     }
 
 
-    public function action($arg1){
+    public function action($arg1 = "rien"){
         $this->jeumodel->action($arg1);
 
         $this->view();
