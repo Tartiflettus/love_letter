@@ -219,6 +219,14 @@ class JeuModel extends CI_Model {
     }
 
     function getRetires(){
-        $q = $this->db->query("select id_carte, image from carte join jeu using()");
+        $q = $this->db->query("select id_carte, image from carte where statut='retire' and num_partie=?",
+            Array($_SESSION["num_partie"]));
+        return $q->result();
+    }
+
+    function getNbCartesPioche(){
+        $q = $this->db->query("select count(*) as cnt from carte where statut='pioche' and num_partie=?",
+            Array($_SESSION["num_partie"]));
+        return $q->row()->cnt;
     }
 }
