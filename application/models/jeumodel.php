@@ -26,6 +26,10 @@ class JeuModel extends CI_Model {
         if ($indice < $q->num_rows()) {
             /*var_dump(*/$this->db->query("update carte set statut='main', joueur=? where id_carte=?",
                 Array($_SESSION["id"], $q->row($indice)->id_carte) ) /*)*/;
+
+            //mettre à jour l'état
+            $this->db->query("update jeu set etat='pose' where num_partie=?",
+                Array($_SESSION["num_partie"]));
         } else {
             http_response_code(500);
             exit();
@@ -231,7 +235,9 @@ class JeuModel extends CI_Model {
     }
 
     function poser($idCarte){
-        $this->db->query();
+        $this->db->query("update carte set statut='pose' where id_carte=?",
+            Array($idCarte));
+        $this->passerJoueurSuivant();
     }
 
     //fonction principale, dont le comportement dépends de l'état du jeu
@@ -257,6 +263,6 @@ class JeuModel extends CI_Model {
                 return;
         }
 
-        $this->passerJoueurSuivant();
+        //$this->passerJoueurSuivant();
     }
 }
