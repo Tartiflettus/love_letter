@@ -69,5 +69,12 @@ class JeuController extends CI_Controller {
         $this->view();
     }
 
+    public function initJ2(){
+        $_SESSION["id"] = 2;
+        $_SESSION["num_joueur"] = 1;
+        $_SESSION["num_partie"] = 1;
+        echo "j2 initialisé";
+    }
+
 }
 
