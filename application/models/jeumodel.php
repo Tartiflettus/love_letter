@@ -229,4 +229,30 @@ class JeuModel extends CI_Model {
             Array($_SESSION["num_partie"]));
         return $q->row()->cnt;
     }
+
+
+    //fonction principale, dont le comportement dépends de l'état du jeu
+    function action($arg1){
+        $q = $this->db->query("select etat, joueur_actu from jeu where num_partie=?",
+            Array($_SESSION["num_partie"]));
+        $etat = $q->row()->etat;
+        $actu = $q->row()->joueur_actu;
+
+        //ne rien faire si ce n'est pas notre tour
+        if($actu != $_SESSION["num_joueur"]){
+            return;
+        }
+
+        switch($etat){
+            case "pioche":
+                $this->piocher();
+                break;
+            /*case "pose":
+                break;*/
+            default:
+                return;
+        }
+
+        $this->passerJoueurSuivant();
+    }
 }
