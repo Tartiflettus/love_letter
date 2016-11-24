@@ -1,24 +1,15 @@
-
-#piocheDiv {
-    border: thick;
-    border-color: black;
-}
-
 img {
-    width:150px;
+    width:100px;
 }
 
-div#bas {
-    position: absolute;
-    bottom: 0;
+.haut{
+    position : absolute;
+    top : 0px;
+    right : 0px;
+}
+
+.bas {
+    bottom: 0px;
+    left : 50px;
     width: 100%;
-}
-
-div#bas img {
-    text-align: center;
-}
-
-td {
-    /*border-style: thick !important; */
-    border: 1px thick !important;
 }
