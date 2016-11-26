@@ -74,8 +74,24 @@
         ?>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script>
+            /*
+     
+             Le web est un MERDE CORDIALEMENT.
+             Les types qui ont décidé de normaliser (on peut vraiment appeler cette merde une norme ?)
+             ... le web ainsi sont des CONNARDS DE SERVICE.
+     
+             */
 
-        
+            $(document).ready(function () {
+                setInterval(function () {
+                    console.log("coucou");
+                    $("#maj").load("localhost/index.php/jeucontroller/view" + ' #maj');
+                }, 1000);
+            });
+
+        </script>
+
     </body>
 
 </html>
