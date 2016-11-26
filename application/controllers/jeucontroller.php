@@ -15,11 +15,17 @@ class JeuController extends CI_Controller {
           show_404();
           } */
 
+        $data["main1"] = $this->jeumodel->getMain();
+        $data["main2"] = $this->jeumodel->getMainAutres(1);
+        $data["main3"] = $this->jeumodel->getMainAutres(2);
+        $data["main4"] = $this->jeumodel->getMainAutres(3);
+        
         $data['title'] = "jeu";
-        $data["main"] = $this->jeumodel->getMain();
+        
         $data["pose"] = $this->jeumodel->getPose();
         $data["retires"] = $this->jeumodel->getRetires();
-        $data["main1"] = $this->jeumodel->getMainAutres(1);
+        
+        $data["nbjoueurs"] = $this->jeumodel->nbJoueurs();
         
         $this->load->view('pages/jeu.php', $data);
     }
@@ -70,10 +76,6 @@ class JeuController extends CI_Controller {
         $this->view();
     }
     
-    public function testAjax(){
-        echo 'coucou';
-    }
-
     public function initJ2(){
         $_SESSION["id"] = 2;
         $_SESSION["num_joueur"] = 1;

@@ -1,15 +1,39 @@
-img {
+#carte{
     width:100px;
 }
 
-.haut{
+#mainJ1 {
     position : absolute;
-    top : 0px;
-    right : 0px;
+    bottom : 0%;
+    right : 50%;  
 }
 
-.bas {
-    bottom: 0px;
-    left : 50px;
-    width: 100%;
+#mainJ2 {
+    position : absolute;
+    left : 0%;
+    top : 40%;  
+}
+
+#mainJ3 {
+    position : absolute;
+    left : 50%;
+    top : 0%;  
+}
+
+#mainJ4 {
+    position : absolute;
+    right : 0%;
+    top : 50%;  
+}
+
+#milieu {
+    position : absolute;
+    left : 30%;
+    top : 40%; 
+}
+
+#pioche {
+    position : absolute;
+    left : 60%;
+    top : 40%; 
 }

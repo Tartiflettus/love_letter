@@ -26,6 +26,7 @@ class JeuModel extends CI_Model {
         if ($indice < $q->num_rows()) {
             /*var_dump(*/$this->db->query("update carte set statut='main', joueur=? where id_carte=?",
                 Array($_SESSION["id"], $q->row($indice)->id_carte) ) /*)*/;
+            
         } else {
             http_response_code(500);
             exit();
@@ -118,7 +119,7 @@ class JeuModel extends CI_Model {
             $indice = rand(0, $q->num_rows()-1);
 
             if ($indice < $q->num_rows()) {
-                $this->db->query("update carte set statut='retire' where id=?", Array($q->row($indice)));
+                $this->db->query("update carte set statut='retire' where id_carte=?", Array($q->row($indice)->id_carte));
             } else {
                 http_response_code(500);
                 exit();
@@ -170,7 +171,7 @@ class JeuModel extends CI_Model {
         $this->remplirJeuCarte();
         //joueur actuel : default 1
         //manche : default 0
-        if ($this->nbJoueurs() === 2) {
+        if ($this->nbJoueurs() <= 2) {
             $this->deuxJoueurs();
             echo "mode 2 joueurs séléctionné";
         }
@@ -232,6 +233,7 @@ class JeuModel extends CI_Model {
 
 
     //fonction principale, dont le comportement dépends de l'état du jeu
+    //arg1 id carte pour poser
     function action($arg1){
         $q = $this->db->query("select etat, joueur_actu from jeu where num_partie=?",
             Array($_SESSION["num_partie"]));
@@ -240,6 +242,7 @@ class JeuModel extends CI_Model {
 
         //ne rien faire si ce n'est pas notre tour
         if($actu != $_SESSION["num_joueur"]){
+            echo 'coucou';
             return;
         }
 
