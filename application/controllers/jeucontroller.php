@@ -9,11 +9,6 @@ class JeuController extends CI_Controller {
     }
 
     public function view() {
-        /* if ( ! file_exists(APPPATH.'views/pages/'.$page.'.php'))
-          {
-          // Whoops, we don't have a page for that!
-          show_404();
-          } */
 
         $data["main1"] = $this->jeumodel->getMain();
         $data["main2"] = $this->jeumodel->getMainAutres(1);
@@ -73,6 +68,9 @@ class JeuController extends CI_Controller {
     public function action($arg1 = "rien"){
         $this->jeumodel->action($arg1);
 
+        //echo "Location : ".base_url()."index.php/jeucontroller/view";
+        //header("Location : ".base_url()."index.php/jeucontroller/view");
+        //exit();
         $this->view();
     }
     
