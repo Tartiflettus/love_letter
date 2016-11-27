@@ -12,6 +12,7 @@ class JeuController extends CI_Controller {
 
         $data["nomJoueurActu"] = $this->jeumodel->getNomJoueurActu();
         $data["actionActu"] = $this->jeumodel->getActionActu();
+        $data["nomJoueur"] = $this->jeumodel->getNomJoueur();
 
         $data["main1"] = $this->jeumodel->getMain();
         $data["main2"] = $this->jeumodel->getMainAutres(1);
@@ -28,7 +29,9 @@ class JeuController extends CI_Controller {
         $data["retires"] = $this->jeumodel->getRetires();
         
         $data["nbjoueurs"] = $this->jeumodel->nbJoueurs();
-        
+
+        echo $_SESSION["num_partie"];
+
         $this->load->view('pages/jeu.php', $data);
     }
 
@@ -73,6 +76,7 @@ class JeuController extends CI_Controller {
 
 
     public function action($arg1 = "rien"){
+        $this->jeumodel->getPartie();
         $this->jeumodel->action($arg1);
 
         //echo "Location : ".base_url()."index.php/jeucontroller/view";
