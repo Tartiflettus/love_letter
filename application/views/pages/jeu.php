@@ -8,6 +8,7 @@
     <body>
 
         <h1>Jeu</h1>
+        <p>Action en cours : <?php echo $nomJoueurActu." : ".$actionActu; ?></p>
         <?php
         $tailleMain1 = count($main1);
         $tailleMain2 = count($main2);
@@ -20,7 +21,7 @@
 
 
         <?php
-        echo '<form id="pioche" method="post" action="' . base_url() . 'index.php/jeucontroller/action">';
+        echo '<form id="pioche" method="post" action="' . base_url() . 'index.php/jeucontroller/action/pioche">';
         echo '<input type="image" src="' . base_url() . 'images_cartes/dos_carte.png" id="carte"/></td>';
         echo '</form>';
 
@@ -76,10 +77,9 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script>
             /*
-     
-             Le web est un MERDE CORDIALEMENT.
-             Les types qui ont décidé de normaliser (on peut vraiment appeler cette merde une norme ?)
-             ... le web ainsi sont des CONNARDS DE SERVICE.
+
+             Les patates sont meilleures cuites dans la bière.
+             Le cataclysme est un pingouin
      
              */
 

@@ -234,7 +234,7 @@ class JeuModel extends CI_Model {
     function poser($idCarte){
         $this->db->query("update carte set statut='pose' where id_carte=?",
             Array($idCarte));
-        $this->passerJoueurSuivant();
+        //$this->passerJoueurSuivant();
     }
 
     //fonction principale, dont le comportement dépends de l'état du jeu
@@ -247,21 +247,46 @@ class JeuModel extends CI_Model {
 
         //ne rien faire si ce n'est pas notre tour
         if($actu != $_SESSION["num_joueur"]){
-            echo 'coucou';
+            echo 'Tricheur';
             return;
         }
 
         switch($etat){
             case "pioche":
                 $this->piocher();
+                $this->setEtat("pose");
                 break;
             case "pose":
                 $this->poser($arg1);
+                $this->setEtat("pioche");
+                $this->passerJoueurSuivant();
                 break;
             default:
                 return;
         }
 
         //$this->passerJoueurSuivant();
+    }
+
+    function setEtat($etat){
+        $this->db->query("update jeu set etat=? where num_partie=?",
+            Array($etat, $_SESSION["num_partie"]));
+    }
+
+
+    function getNomJoueurActu(){
+        $q = $this->db->query("select nom from joueurs join jeu using(num_partie)"
+            ."where num_partie=? and joueurs.num_joueur=jeu.joueur_actu",
+            Array($_SESSION["num_partie"]));
+
+        assert($q->num_rows() == 1);
+        return $q->row()->nom;
+    }
+
+    function getActionActu(){
+        $q = $this->db->query("select etat from jeu where num_partie=?",
+            Array($_SESSION["num_partie"]));
+
+        return $q->row()->etat;
     }
 }
