@@ -247,7 +247,7 @@ class JeuModel extends CI_Model {
 
         //ne rien faire si ce n'est pas notre tour
         if($actu != $_SESSION["num_joueur"]){
-            echo 'coucou';
+            echo 'pas ton tour';
             return;
         }
 

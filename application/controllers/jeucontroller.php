@@ -17,7 +17,11 @@ class JeuController extends CI_Controller {
         
         $data['title'] = "jeu";
         
-        $data["pose"] = $this->jeumodel->getPose();
+        $data["pose1"] = $this->jeumodel->getPose();
+        $data["pose2"] = $this->jeumodel->getPoseAutres(1);
+        $data["pose3"] = $this->jeumodel->getPoseAutres(2);
+        $data["pose4"] = $this->jeumodel->getPoseAutres(3);
+        
         $data["retires"] = $this->jeumodel->getRetires();
         
         $data["nbjoueurs"] = $this->jeumodel->nbJoueurs();

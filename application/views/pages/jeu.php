@@ -14,7 +14,11 @@
         $tailleMain3 = count($main3);
         $tailleMain4 = count($main4);
 
-        $taillePose = count($pose);
+        $taillePose1 = count($pose1);
+        $taillePose2 = count($pose2);
+        $taillePose3 = count($pose3);
+        $taillePose4 = count($pose4);        
+        
         $tailleMilieu = count($retires);
         ?>
 
