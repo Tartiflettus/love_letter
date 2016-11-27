@@ -10,6 +10,9 @@ class JeuController extends CI_Controller {
 
     public function view() {
 
+        $data["nomJoueurActu"] = $this->jeumodel->getNomJoueurActu();
+        $data["actionActu"] = $this->jeumodel->getActionActu();
+
         $data["main1"] = $this->jeumodel->getMain();
         $data["main2"] = $this->jeumodel->getMainAutres(1);
         $data["main3"] = $this->jeumodel->getMainAutres(2);
