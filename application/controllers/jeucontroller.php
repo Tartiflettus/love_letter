@@ -36,6 +36,8 @@ class JeuController extends CI_Controller {
     }
 
     public function test() {
+        $this->db->query("insert into Jeu (manche) values (0);");
+
         $this->jeumodel->getPartie(); //obtenir session de num_partie
 
         //premier joueur
@@ -58,10 +60,10 @@ class JeuController extends CI_Controller {
 
         $this->jeumodel->jouerCarte($q->row()->id_carte);
         $this->jeumodel->passerJoueurSuivant();
-        var_dump($this->jeumodel->getMainAutres(1));
+        /*var_dump($this->jeumodel->getMainAutres(1));
         var_dump($this->jeumodel->getPoseAutres(0));
         var_dump($this->jeumodel->getRetires());
-        var_dump($this->jeumodel->getNbCartesPioche());
+        var_dump($this->jeumodel->getNbCartesPioche());*/
     }
 
 
