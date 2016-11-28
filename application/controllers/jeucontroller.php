@@ -12,6 +12,7 @@ class JeuController extends CI_Controller {
 
         $data["nomJoueurActu"] = $this->jeumodel->getNomJoueurActu();
         $data["actionActu"] = $this->jeumodel->getActionActu();
+        $data["nomJoueur"] = $this->jeumodel->getNomJoueur();
 
         $data["main1"] = $this->jeumodel->getMain();
         $data["main2"] = $this->jeumodel->getMainAutres(1);
@@ -29,10 +30,14 @@ class JeuController extends CI_Controller {
 
         $data["nbjoueurs"] = $this->jeumodel->nbJoueurs();
 
+        echo $_SESSION["num_partie"];
+
         $this->load->view('pages/jeu.php', $data);
     }
 
     public function test() {
+        $this->db->query("insert into Jeu (manche) values (0);");
+
         $this->jeumodel->getPartie(); //obtenir session de num_partie
         //premier joueur
         $this->jeumodel->ajouterJoueur();
@@ -51,10 +56,10 @@ class JeuController extends CI_Controller {
 
         $this->jeumodel->jouerCarte($q->row()->id_carte);
         $this->jeumodel->passerJoueurSuivant();
-        var_dump($this->jeumodel->getMainAutres(1));
-        var_dump($this->jeumodel->getPoseAutres(0));
-        var_dump($this->jeumodel->getRetires());
-        var_dump($this->jeumodel->getNbCartesPioche());
+        /* var_dump($this->jeumodel->getMainAutres(1));
+          var_dump($this->jeumodel->getPoseAutres(0));
+          var_dump($this->jeumodel->getRetires());
+          var_dump($this->jeumodel->getNbCartesPioche()); */
     }
 
     public function testPioche() {
@@ -78,11 +83,6 @@ class JeuController extends CI_Controller {
         } else {
             $this->jeumodel->action($arg1);
         }
-
-        //echo "Location : ".base_url()."index.php/jeucontroller/view";
-        //header("Location : ".base_url()."index.php/jeucontroller/view");
-        //exit();
-        $this->view();
     }
 
     public function initJ2() {

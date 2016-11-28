@@ -6,7 +6,12 @@
  * Date: 12/11/2016
  * Time: 23:01
  */
-session_start();
+if(session_start()){
+    echo "<p>La session démarre</p>";
+}
+else{
+    echo "<strong>Problème démarrage session</strong>";
+}
 
 class JeuModel extends CI_Model {
 
@@ -247,6 +252,7 @@ class JeuModel extends CI_Model {
     }
     
     function action($arg1){
+        echo isset($_SESSION["num_partie"]) ? "set" : "pas set";
         $q = $this->db->query("select etat, joueur_actu from jeu where num_partie=?",
             Array($_SESSION["num_partie"]));
         $etat = $q->row()->etat;
@@ -296,5 +302,11 @@ class JeuModel extends CI_Model {
             Array($_SESSION["num_partie"]));
 
         return $q->row()->etat;
+    }
+
+    function getNomJoueur(){
+        $q = $this->db->query("select nom from joueurs where id=?",
+            Array($_SESSION["id"]));
+        return $q->row()->nom;
     }
 }
