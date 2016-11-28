@@ -29,7 +29,7 @@
 
 
             <?php
-            echo '<form id="pioche" method="post" action="' . base_url() . 'index.php/jeucontroller/action/pioche">';
+            echo '<form id="pioche" method="post" action="' . base_url() . 'index.php/jeucontroller/action">';
             echo '<input type="image" src="' . base_url() . 'images_cartes/dos_carte.png" id="carte"/></td>';
             echo '</form>';
 
@@ -63,7 +63,7 @@
 
             function afficherJoueur1($nb_cartes, $main) {
                 if ($nb_cartes != 0) {
-                    echo '<form id="mainJ1" method="post">';
+                    echo '<form id="mainJ1" method="post" action="' . base_url() . 'index.php/jeucontroller/action">';
                     for ($i = 0; $i < $nb_cartes; $i++) {
                         echo '<input type="image" src="' . base_url($main[$i]->image) . '" name="j1" value="' . $main[$i]->id_carte . '" id="carte"/></td>';
                     }
