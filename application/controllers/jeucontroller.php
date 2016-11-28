@@ -36,6 +36,10 @@ class JeuController extends CI_Controller {
     }
 
     public function test() {
+
+        $this->db->query("TRUNCATE `carte`");
+        $this->db->query("TRUNCATE `jeu`");
+        $this->db->query("TRUNCATE `joueurs`");
         $this->db->query("insert into Jeu (manche) values (0);");
 
         $this->jeumodel->getPartie(); //obtenir session de num_partie
@@ -72,9 +76,8 @@ class JeuController extends CI_Controller {
     }
 
     public function action($arg1 = "rien") {
-        if ($this->jeumodel->getEtat() === "pose") {
-            echo isset($_POST["c0"]);
-            echo isset($_POST["c1"]);
+
+        if ($this->jeumodel->getEtat() == "pose") {
             if (isset($_POST["c0"])) {
                 $this->jeumodel->action($_POST["c0"]);
             } else if (isset($_POST["c1"])) {
@@ -83,6 +86,8 @@ class JeuController extends CI_Controller {
         } else {
             $this->jeumodel->action($arg1);
         }
+
+        $this->view();
     }
 
     public function initJ2() {

@@ -60,7 +60,7 @@
 
             function afficherJoueur1($nb_cartes, $main, $taillePose, $pose) {
 
-                echo '<form id="mainJ1" method="post" action="' . base_url() . 'index.php/jeucontroller/action/pioche">';
+                echo '<form id="mainJ1" method="post" action="' . base_url() . 'index.php/jeucontroller/action" onsubmit="coucou()">';
                 echo '<table>';
                 if ($taillePose != 0) {
                     echo '<tr>';
@@ -69,14 +69,15 @@
                     }
                     echo '</tr>';
                 }
-                if ($nb_cartes != 0) {
-                    echo '<tr>';
-                    for ($i = 0; $i < $nb_cartes; $i++) {
-                        echo '<td><input type="image" src="' . base_url($main[$i]->image) . '" name="c' . $i . '" value="' . $main[$i]->id_carte . '" id="carte"/></td>';
-                    }
-                    echo '</tr>';
-                }
                 echo '</table>';
+                if ($nb_cartes != 0) {
+                    //echo '<tr>';
+                    for ($i = 0; $i < $nb_cartes; $i++) {
+                        echo '<input type="image" src="' . base_url($main[$i]->image) . '" name="c' . $i . '" value="' . $main[$i]->id_carte . '" id="carte"/></td>';
+                    }
+                    //echo '</tr>';
+                }
+                
                 echo '</form>';
             }
 
@@ -101,6 +102,9 @@
              Le cataclysme est un pingouin
              
              */
+            function coucou(){
+                console.log("submit");
+            }
 
             $(document).ready(function () {
                 setInterval(function () {
