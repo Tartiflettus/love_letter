@@ -239,6 +239,13 @@ class JeuModel extends CI_Model {
 
     //fonction principale, dont le comportement dépends de l'état du jeu
     //arg1 id carte pour poser
+    
+    function getEtat(){
+        $q = $this->db->query("select etat from jeu where num_partie=?",
+            Array($_SESSION["num_partie"]));
+        return $q->row()->etat;
+    }
+    
     function action($arg1){
         $q = $this->db->query("select etat, joueur_actu from jeu where num_partie=?",
             Array($_SESSION["num_partie"]));
