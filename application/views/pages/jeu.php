@@ -9,7 +9,7 @@
         <div id="maj">
             <h1>Jeu</h1>
             <p>Vous êtes <?php echo $nomJoueur; ?></p>
-            <p>Action en cours : <?php echo $nomJoueurActu." : ".$actionActu; ?></p>
+            <p>Action en cours : <?php echo $nomJoueurActu . " : " . $actionActu; ?></p>
             <?php
             $tailleMain1 = count($main1);
             $tailleMain2 = count($main2);
@@ -26,7 +26,7 @@
 
 
             <?php
-            echo '<form id="pioche" method="post" action="' . base_url() . 'index.php/jeucontroller/action/pioche">';
+            echo '<form id="pioche" method="post" action="' . base_url() . 'index.php/jeucontroller/action">';
             echo '<input type="image" src="' . base_url() . 'images_cartes/dos_carte.png" id="carte"/></td>';
             echo '</form>';
 
@@ -58,29 +58,27 @@
                 }
             }
 
+            function afficherJoueur1($nb_cartes, $main, $taillePose, $pose) {
 
-        function afficherJoueur1($nb_cartes, $main, $taillePose, $pose) {
-
-            echo '<form id="mainJ1" method="post" action="' . base_url() . 'index.php/jeucontroller/action/pioche">';
-            echo '<table>';
-            if ($taillePose != 0) {
-                echo '<tr>';
-                for ($j = 0; $j < $taillePose; $j++) {
-                    echo '<td><img src="' . base_url($pose[$j]->image) . '" name="posej1" value="' . $pose[$j]->id_carte . '" id="carte"/></td>';
+                echo '<form id="mainJ1" method="post" action="' . base_url() . 'index.php/jeucontroller/action/pioche">';
+                echo '<table>';
+                if ($taillePose != 0) {
+                    echo '<tr>';
+                    for ($j = 0; $j < $taillePose; $j++) {
+                        echo '<td><img src="' . base_url($pose[$j]->image) . '" name="posej1" value="' . $pose[$j]->id_carte . '" id="carte"/></td>';
+                    }
+                    echo '</tr>';
                 }
-                echo '</tr>';
-            }
-            if ($nb_cartes != 0) {
-                echo '<tr>';
-                for ($i = 0; $i < $nb_cartes; $i++) {
-                    echo '<td><input type="image" src="' . base_url($main[$i]->image) . '" name="c'.$i.'" value="' . $main[$i]->id_carte . '" id="carte"/></td>';
+                if ($nb_cartes != 0) {
+                    echo '<tr>';
+                    for ($i = 0; $i < $nb_cartes; $i++) {
+                        echo '<td><input type="image" src="' . base_url($main[$i]->image) . '" name="c' . $i . '" value="' . $main[$i]->id_carte . '" id="carte"/></td>';
+                    }
+                    echo '</tr>';
                 }
-                echo '</tr>';
+                echo '</table>';
+                echo '</form>';
             }
-            echo '</table>';
-            echo '</form>';
-        }
-
 
             function afficherAutres($id, $id_carte, $main, $num_joueur) {
                 if ($main != 0) {
