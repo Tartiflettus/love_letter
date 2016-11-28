@@ -97,4 +97,17 @@ class JeuController extends CI_Controller {
         echo "j2 initialisé";
     }
 
+    public function index(){
+        $this->load->view("pages/index");
+    }
+
+    public function enregistrer(){
+        $nom = $_POST["nom"];
+        $this->jeumodel->getPartie();
+        $this->jeumodel->ajouterJoueur();
+        $this->jeumodel->enregistrer($nom);
+
+        $this->view();
+    }
+
 }
