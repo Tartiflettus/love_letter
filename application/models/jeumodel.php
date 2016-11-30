@@ -349,4 +349,16 @@ class JeuModel extends CI_Model {
         return $q->row()->nom;
     }
 
+
+    function connaitPartie(){
+        return isset($_SESSION["num_partie"]);
+    }
+
+    function connaitId(){
+        return isset($_SESSION["id"]);
+    }
+
+    function connaitNumJoueur(){
+        return isset($_SESSION["num_joueur"]);
+    }
 }

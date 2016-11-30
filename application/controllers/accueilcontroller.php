@@ -7,21 +7,18 @@ class AccueilController extends CI_Controller {
         parent::__construct();
         $this->load->model('jeumodel');
         $this->load->database();
+        $this->load->controller('jeucontroller');
     }
 
     public function index(){
-        $this->jeumodel->getPartie();
-        $data["num_partie"] = $_SESSION["num_partie"];
-
-        $this->jeumodel->ajouterJoueur();
-        $data["id_joueur"] = $_SESSION["id"];
-
-        $this->load->view("pages/index", $data);
+        $this->load->view("pages/index");
     }
 
-    public function enregistrer($nom){
-        echo $this->jeumodel->enregistrer($nom);
-        echo "success";
+    public function enregistrer(){
+        $nom = $_POST["nom"];
+        $this->jeumodel->enregistrer($nom);
+
+        $this->jeucontroller->view();
     }
 
 
