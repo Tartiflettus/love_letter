@@ -48,13 +48,13 @@
                         afficherJoueur1($tailleMain1, $main1, $taillePose1, $pose1);
                         break;
                     case 1:
-                        afficherAutres("mainJ2", $main2[0]->id_carte, $tailleMain2, "j2");
+                        afficherAutres("mainJ2", $main2[0]->id_carte, $tailleMain2, "j2", $pose2);
                         break;
                     case 2:
-                        afficherAutres("mainJ3", $main3[0]->id_carte, $tailleMain3, "j3");
+                        afficherAutres("mainJ3", $main3[0]->id_carte, $tailleMain3, "j3", $pose3);
                         break;
                     case 3:
-                        afficherAutres("mainJ4", $main4[0]->id_carte, $tailleMain4, "j4");
+                        afficherAutres("mainJ4", $main4[0]->id_carte, $tailleMain4, "j4", $pose4);
                 }
             }
 
@@ -69,26 +69,38 @@
                     }
                     echo '</tr>';
                 }
-                echo '</table>';
+
                 if ($nb_cartes != 0) {
-                    //echo '<tr>';
+                    echo '<tr>';
                     for ($i = 0; $i < $nb_cartes; $i++) {
-                        echo '<input type="image" src="' . base_url($main[$i]->image) . '" name="c' . $i . '" value="' . $main[$i]->id_carte . '" id="carte"/></td>';
+                        echo '<td><input type="image" src="' . base_url($main[$i]->image) . '" name="c' . $i . '" value="' . $main[$i]->id_carte . '" id="carte"/></td>';
                     }
-                    //echo '</tr>';
+                    echo '</tr>';
                 }
-                
+                echo '</table>';
                 echo '</form>';
             }
 
-            function afficherAutres($id, $id_carte, $main, $num_joueur) {
-                if ($main != 0) {
-                    echo '<form id="' . $id . '" method="post">';
-                    for ($i = 0; $i < $main; $i++) {
-                        echo '<input type="image" src="' . base_url() . 'images_cartes/dos_carte.png" name ="' . $num_joueur . '" value="' . $id_carte . '" id="carte"/>';
+            function afficherAutres($id, $id_carte, $main, $num_joueur, $pose) {
+
+                echo '<form id="' . $id . '" method="post">';
+                echo '<table>';
+                if (count($pose) != 0) {
+                    echo '<tr>';
+                    for ($j = 0; $j < count($pose); $j++) {
+                        echo '<td><img src="' . base_url($pose[$j]->image) . '" id="carte"></td>';
                     }
-                    echo '</form>';
+                    echo '</tr>';
                 }
+                if ($main != 0) {
+                    echo '<tr>';
+                    for ($i = 0; $i < $main; $i++) {
+                        echo '<td><input type="image" src="' . base_url() . 'images_cartes/dos_carte.png" name ="' . $num_joueur . '" value="' . $id_carte . '" id="carte"/></td>';
+                    }
+                    echo '</tr>';
+                }
+                echo '</table>';
+                echo '</form>';
             }
             ?>
 
@@ -102,9 +114,6 @@
              Le cataclysme est un pingouin
              
              */
-            function coucou(){
-                console.log("submit");
-            }
 
             $(document).ready(function () {
                 setInterval(function () {

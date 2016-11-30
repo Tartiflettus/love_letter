@@ -53,13 +53,13 @@ class JeuController extends CI_Controller {
 
         $this->jeumodel->lancerJeu();
 
-        $this->testPioche();
+        //$this->testPioche();
 
         //sélectionner la carte à poser
         $q = $this->db->query("select id_carte from carte where joueur=?", Array($_SESSION["id"]));
 
-        $this->jeumodel->jouerCarte($q->row()->id_carte);
-        $this->jeumodel->passerJoueurSuivant();
+        //$this->jeumodel->jouerCarte($q->row()->id_carte);
+        //$this->jeumodel->passerJoueurSuivant();
         /* var_dump($this->jeumodel->getMainAutres(1));
           var_dump($this->jeumodel->getPoseAutres(0));
           var_dump($this->jeumodel->getRetires());
@@ -77,7 +77,7 @@ class JeuController extends CI_Controller {
 
     public function action($arg1 = "rien") {
 
-        if ($this->jeumodel->getEtat() == "pose") {
+        if ($this->jeumodel->getActionActu() == "pose") {
             if (isset($_POST["c0"])) {
                 $this->jeumodel->action($_POST["c0"]);
             } else if (isset($_POST["c1"])) {
