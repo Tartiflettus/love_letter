@@ -15,7 +15,10 @@ if (session_start()) {
 class JeuModel extends CI_Model {
 
     function getTaillePioche() {
-        $this->db->query("select count(*) from carte where statut='pioche'");
+        $q = $this->db->query("select count(*) as cnt from carte where statut='pioche' and num_partie=?",
+            Array($_SESSION["num_partie"]));
+
+        return $q->row()->cnt;
     }
 
     function piocheEstVide() {
@@ -146,7 +149,7 @@ class JeuModel extends CI_Model {
 
     //a tester
     function defausserCarteMain($id_carte) {
-        //cas où princesse défaussée
+        //cas oï¿½ princesse dï¿½faussï¿½e
         $carte = $this->getValeur($id_carte);
         if($carte == 8){
             $q = $this->db->query("select id from carte join joueurs using(num_partie) where id_carte = ?", Array($id_carte));
@@ -360,5 +363,9 @@ class JeuModel extends CI_Model {
 
     function connaitNumJoueur(){
         return isset($_SESSION["num_joueur"]);
+    }
+
+    function jeuEstLance(){
+        return !$this->piocheEstVide();
     }
 }

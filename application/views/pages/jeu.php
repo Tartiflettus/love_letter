@@ -8,7 +8,7 @@
     <body>
         <div id="maj">
             <h1>Jeu</h1>
-            <p>Vous êtes <?php echo $nomJoueur; ?></p>
+            <p>Vous Ãªtes <?php echo $nomJoueur; ?></p>
             <p>Action en cours : <?php echo $nomJoueurActu . " : " . $actionActu; ?></p>
             <?php
             $tailleMain1 = count($main1);
