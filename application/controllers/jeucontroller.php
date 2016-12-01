@@ -106,6 +106,31 @@ class JeuController extends CI_Controller {
         $this->jeumodel->getPartie();
         $this->jeumodel->ajouterJoueur();
         $this->jeumodel->enregistrer($nom);
+        /*if(!$this->jeumodel->jeuEstLance()){
+            $this->jeumodel->lancerJeu();
+            echo "<p>lancement de jeu</p>";
+        }
+        else{
+            echo "<p>pas de lancement</p>";
+        }*/
+
+        $this->lobby();
+    }
+
+    public function lobby(){
+        if($this->jeumodel->jeuEstLance()){
+            redirect("jeucontroller/view");
+        }
+        else{
+            $data["noms"] = $this->jeumodel->getNoms();
+            $this->load->view("pages/lobby", $data);
+        }
+    }
+
+    public function demarrer(){
+        if(!$this->jeumodel->jeuEstLance()){
+            $this->jeumodel->lancerJeu();
+        }
 
         $this->view();
     }
