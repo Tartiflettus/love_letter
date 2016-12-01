@@ -87,7 +87,7 @@
 
             function afficherAutres($id, $id_carte, $main, $num_joueur, $pose) {
 
-                echo '<form id="' . $id . '" method="post">';
+                echo '<form id="' . $id . '" method="post" action="'.base_url().'index.php/jeucontroller/action">';
                 echo '<table>';
                 if (count($pose) != 0) {
                     echo '<tr>';
@@ -99,14 +99,17 @@
                 if ($main != 0) {
                     echo '<tr>';
                     for ($i = 0; $i < $main; $i++) {
-                        echo '<td><input type="image" src="' . base_url() . 'images_cartes/dos_carte.png" name ="' . $num_joueur . '" value="' . $id_carte . '" id="carte"/></td>';
+                        echo '<td><input type="image" src="' . base_url() . 'images_cartes/dos_carte.png" name ="' . $num_joueur . '" value="' . $id_carte . '" id="carte" onclick="appliquerRegle()"/></td>';
                     }
                     echo '</tr>';
                 }
                 echo '</table>';
+                echo '<input id="supposition" type="hidden" name="supposition" value="">';
                 echo '</form>';
             }
             ?>
+
+            <input id="etat" type="hidden" value="<?php echo $actionActu ?>">
 
         </div>
 
@@ -125,6 +128,19 @@
                     $("#maj").load("/love_letter/index.php/jeucontroller/view" + ' #maj');
                 }, 1000);
             });
+
+            function appliquerRegle(){
+                var etat = $("#etat").val();
+                switch(etat){
+                    case "garde":
+                        var res = prompt("Quelle carte pensez-vous que c'est ?");
+                        ("#supposition").val(res);
+                        console.log("supposition écrite : " + ("#supposition").val());
+                        break;
+                    default:
+                        return;
+                }
+            }
 
         </script>
 
