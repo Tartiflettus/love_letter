@@ -83,6 +83,8 @@ class JeuController extends CI_Controller {
             } else if (isset($_POST["c1"])) {
                 $this->jeumodel->action($_POST["c1"]);
             }
+            //echo "<script>alert('pas de pose!');</script>";
+            var_dump($_POST);
         } else {
             $this->jeumodel->action($arg1);
         }

@@ -311,7 +311,7 @@ class JeuModel extends CI_Model {
         $carte = $q_carte->row()->valeur;
         switch ($carte) {
             case 1:
-
+                $this->setEtat("garde");
                 break;
             case 2:
                 break;
