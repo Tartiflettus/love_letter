@@ -6,6 +6,10 @@
         <link rel="stylesheet" href="<?php echo base_url() ?>styles/jeu.css" />
     </head>
     <body>
+        <form method="post" action="<?php echo base_url() ?>index.php/jeucontroller/reset">
+            <input type="submit" value="Reset">
+        </form>
+        
         <div id="maj">
             <h1>Jeu</h1>
             <p>Vous êtes <?php echo $nomJoueur; ?></p>

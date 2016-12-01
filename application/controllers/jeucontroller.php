@@ -139,4 +139,8 @@ class JeuController extends CI_Controller {
         $this->view();
     }
 
+    public function reset(){
+        $this->jeumodel->reset();
+        $this->index();
+    }    
 }
