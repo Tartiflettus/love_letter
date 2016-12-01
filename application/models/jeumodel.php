@@ -261,8 +261,9 @@ class JeuModel extends CI_Model {
                 $this->countess();
                 break;
             case "pose":
-                $this->regle($arg1);
+                //$this->regle($arg1);
                 $this->poser($arg1);
+                $this->setEtat("pioche");
                 $this->passerJoueurSuivant();
                 break;
             case "choix":
