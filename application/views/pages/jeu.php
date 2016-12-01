@@ -4,6 +4,12 @@
         <meta charset="UTF-8">
         <title><?php echo $title ?></title>
         <link rel="stylesheet" href="<?php echo base_url() ?>styles/jeu.css" />
+        <style>
+            body{
+                background-image: url("<?php echo base_url() ?>background/bouteille.jpg");
+                background-size: cover;
+            }
+        </style>
     </head>
     <body>
         <form method="post" action="<?php echo base_url() ?>index.php/jeucontroller/reset">
