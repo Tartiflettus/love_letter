@@ -263,13 +263,17 @@ class JeuModel extends CI_Model {
             case "pose":
                 $this->regle($arg1);
                 $this->poser($arg1);
-                $this->setEtat("pioche");
                 $this->passerJoueurSuivant();
+                break;
+            case "choix":
+                $this->choixJoueur($arg1);
                 break;
             default:
                 return;
         }
     }
+
+
 
     function countess() {
         $main = $this->getMain();
@@ -311,7 +315,8 @@ class JeuModel extends CI_Model {
         $carte = $q_carte->row()->valeur;
         switch ($carte) {
             case 1:
-                $this->setEtat("garde");
+                $this->selectionner($id_carte);
+                $this->setEtat("choix");
                 break;
             case 2:
                 break;
@@ -372,5 +377,14 @@ class JeuModel extends CI_Model {
 
     function jeuEstLance(){
         return !$this->piocheEstVide();
+    }
+
+    function selectionner($idCarte){
+        $this->db->query("update jeu set carte_selec=$idCarte where num_partie=?",
+            Array($_SESSION["num_partie"]));
+    }
+
+    function choixJoueur($numJoueur){
+        $_SESSION["choisi"] = $numJoueur;
     }
 }

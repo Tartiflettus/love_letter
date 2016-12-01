@@ -76,16 +76,18 @@ class JeuController extends CI_Controller {
     }
 
     public function action($arg1 = "rien") {
+        $action = $this->jeumodel->getActionActu();
 
-        if ($this->jeumodel->getActionActu() == "pose") {
+        if ($action == "pose") {
             if (isset($_POST["c0"])) {
                 $this->jeumodel->action($_POST["c0"]);
             } else if (isset($_POST["c1"])) {
                 $this->jeumodel->action($_POST["c1"]);
             }
             //echo "<script>alert('pas de pose!');</script>";
-            var_dump($_POST);
-        } else {
+            //var_dump($_POST);
+        }
+        else {
             $this->jeumodel->action($arg1);
         }
 
