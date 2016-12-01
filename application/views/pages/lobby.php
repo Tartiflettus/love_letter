@@ -2,6 +2,30 @@
     <head>
         <title>Lobby</title>
         <meta charset="UTF-8"/>
+        <style>
+            body{
+                background-image: url(<?php echo base_url() ?>background/Furi.jpg);
+                background-size: cover;
+            }
+
+            table{
+                border-style: solid;
+                border-width: 2px;
+                border-collapse: collapse;
+            }
+
+            tr{
+                border-style: solid;
+                border-width: 2px;
+            }
+
+            td{
+                text-align: center;
+                border-style: solid;
+                border-width: 2px;
+            }
+        </style>
+
     </head>
     <body>
         <div id="maj">

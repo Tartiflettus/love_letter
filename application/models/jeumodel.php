@@ -6,11 +6,12 @@
  * Date: 12/11/2016
  * Time: 23:01
  */
-if (session_start()) {
+session_start();
+/*if (session_start()) {
     echo "<p>La session démarre</p>";
 } else {
     echo "<strong>Problème démarrage session</strong>";
-}
+}*/
 
 class JeuModel extends CI_Model {
 

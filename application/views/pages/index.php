@@ -3,6 +3,12 @@
     <head>
         <meta charset="UTF-8">
         <title>Accueil</title>
+        <style>
+            body{
+                background-image: url(<?php echo base_url() ?>background/soleil.jpg);
+                background-size: cover;
+            }
+        </style>
     </head>
     <body>
         <form action="<?php echo base_url() ?>index.php/jeucontroller/enregistrer" method="post">
