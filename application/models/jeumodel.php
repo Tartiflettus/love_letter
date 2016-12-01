@@ -373,4 +373,11 @@ class JeuModel extends CI_Model {
     function jeuEstLance(){
         return !$this->piocheEstVide();
     }
+    
+    function reset(){
+        $this->db->query("TRUNCATE `carte`");
+        $this->db->query("TRUNCATE `jeu`");
+        $this->db->query("TRUNCATE `joueurs`");
+        $this->db->query("insert into Jeu (manche) values (0);");
+    }
 }
