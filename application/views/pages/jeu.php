@@ -60,7 +60,7 @@
 
             function afficherJoueur1($nb_cartes, $main, $taillePose, $pose) {
 
-                echo '<form id="mainJ1" method="post" action="' . base_url() . 'index.php/jeucontroller/action" onsubmit="coucou()">';
+                echo '<form id="mainJ1" method="post" action="' . base_url() . 'index.php/jeucontroller/action">';
                 echo '<table>';
                 if ($taillePose != 0) {
                     echo '<tr>';
