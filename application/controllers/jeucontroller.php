@@ -54,7 +54,6 @@ class JeuController extends CI_Controller {
         $this->jeumodel->lancerJeu();
 
         //$this->testPioche();
-
         //sélectionner la carte à poser
         $q = $this->db->query("select id_carte from carte where joueur=?", Array($_SESSION["id"]));
 
@@ -76,21 +75,7 @@ class JeuController extends CI_Controller {
     }
 
     public function action($arg1 = "rien") {
-        $action = $this->jeumodel->getActionActu();
-
-        if ($action == "pose") {
-            if (isset($_POST["c0"])) {
-                $this->jeumodel->action($_POST["c0"]);
-            } else if (isset($_POST["c1"])) {
-                $this->jeumodel->action($_POST["c1"]);
-            }
-            //echo "<script>alert('pas de pose!');</script>";
-            //var_dump($_POST);
-        }
-        else {
-            $this->jeumodel->action($arg1);
-        }
-
+        $this->jeumodel->action($arg1);
         $this->view();
     }
 
@@ -101,46 +86,46 @@ class JeuController extends CI_Controller {
         echo "j2 initialisé";
     }
 
-    public function index(){
+    public function index() {
         $this->load->view("pages/index");
     }
 
-    public function enregistrer(){
+    public function enregistrer() {
         $nom = $_POST["nom"];
         $this->jeumodel->getPartie();
         $this->jeumodel->ajouterJoueur();
         $this->jeumodel->enregistrer($nom);
-        /*if(!$this->jeumodel->jeuEstLance()){
-            $this->jeumodel->lancerJeu();
-            echo "<p>lancement de jeu</p>";
-        }
-        else{
-            echo "<p>pas de lancement</p>";
-        }*/
+        /* if(!$this->jeumodel->jeuEstLance()){
+          $this->jeumodel->lancerJeu();
+          echo "<p>lancement de jeu</p>";
+          }
+          else{
+          echo "<p>pas de lancement</p>";
+          } */
 
         $this->lobby();
     }
 
-    public function lobby(){
-        if($this->jeumodel->jeuEstLance()){
+    public function lobby() {
+        if ($this->jeumodel->jeuEstLance()) {
             redirect("jeucontroller/view");
-        }
-        else{
+        } else {
             $data["noms"] = $this->jeumodel->getNoms();
             $this->load->view("pages/lobby", $data);
         }
     }
 
-    public function demarrer(){
-        if(!$this->jeumodel->jeuEstLance()){
+    public function demarrer() {
+        if (!$this->jeumodel->jeuEstLance()) {
             $this->jeumodel->lancerJeu();
         }
 
         $this->view();
     }
 
-    public function reset(){
+    public function reset() {
         $this->jeumodel->reset();
         $this->index();
-    }    
+    }
+
 }

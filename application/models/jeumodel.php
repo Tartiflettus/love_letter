@@ -15,8 +15,7 @@ if (session_start()) {
 class JeuModel extends CI_Model {
 
     function getTaillePioche() {
-        $q = $this->db->query("select count(*) as cnt from carte where statut='pioche' and num_partie=?",
-            Array($_SESSION["num_partie"]));
+        $q = $this->db->query("select count(*) as cnt from carte where statut='pioche' and num_partie=?", Array($_SESSION["num_partie"]));
 
         return $q->row()->cnt;
     }
@@ -92,8 +91,8 @@ class JeuModel extends CI_Model {
 
     function getNomJoueurActuel() {
         $num_joueur_actu = $this->getJoueurActuel();
-        $join = $this->db->query("jeu join joueur using(joueur_1, joueur_2, joueur_3, joueur_4)");
-        $q = $this->db->query("select nom from joueur where nb_joueur=? and num_partie=?", $num_joueur_actu, Array($_SESSION["num_partie"]));
+        $join = $this->db->query("jeu join joueurs using(joueur_1, joueur_2, joueur_3, joueur_4)");
+        $q = $this->db->query("select nom from joueurs where nb_joueur=? and num_partie=?", $num_joueur_actu, Array($_SESSION["num_partie"]));
         return $q->row()->nom;
     }
 
@@ -151,7 +150,7 @@ class JeuModel extends CI_Model {
     function defausserCarteMain($id_carte) {
         //cas oï¿½ princesse dï¿½faussï¿½e
         $carte = $this->getValeur($id_carte);
-        if($carte == 8){
+        if ($carte == 8) {
             $q = $this->db->query("select id from carte join joueurs using(num_partie) where id_carte = ?", Array($id_carte));
             $id_joueur = $q->row()->id;
             $this->db->query("update joueurs set elimine=1 where id=?", Array($id_joueur));
@@ -261,20 +260,20 @@ class JeuModel extends CI_Model {
                 $this->countess();
                 break;
             case "pose":
-                //$this->regle($arg1);
-                $this->poser($arg1);
-                $this->setEtat("pioche");
-                $this->passerJoueurSuivant();
+                $tmp = isset($_POST["c0"]) ? $_POST["c0"] : $_POST["c1"];
+                $this->poser($tmp);
+                $this->regle($tmp);
                 break;
             case "choix":
-                $this->choixJoueur($arg1);
+                $this->application_regles($_POST["j2"]);
+                break;
+            case "supposition":
+                $this->supposition($_POST["supposition"]);
                 break;
             default:
                 return;
         }
     }
-
-
 
     function countess() {
         $main = $this->getMain();
@@ -324,6 +323,7 @@ class JeuModel extends CI_Model {
             case 3:
                 break;
             case 4:
+                
                 break;
             case 5:
                 break;
@@ -357,44 +357,92 @@ class JeuModel extends CI_Model {
         return $q->row()->nom;
     }
 
-    function getNoms(){
-        $q = $this->db->query("select nom from joueurs where num_partie=?",
-            Array($_SESSION["num_partie"]));
+    function getNoms() {
+        $q = $this->db->query("select nom from joueurs where num_partie=?", Array($_SESSION["num_partie"]));
         return $q->result();
     }
 
-
-    function connaitPartie(){
+    function connaitPartie() {
         return isset($_SESSION["num_partie"]);
     }
 
-    function connaitId(){
+    function connaitId() {
         return isset($_SESSION["id"]);
     }
 
-    function connaitNumJoueur(){
+    function connaitNumJoueur() {
         return isset($_SESSION["num_joueur"]);
     }
 
-    function jeuEstLance(){
+    function jeuEstLance() {
         return !$this->piocheEstVide();
     }
 
-    function selectionner($idCarte){
-        $this->db->query("update jeu set carte_selec=$idCarte where num_partie=?",
-            Array($_SESSION["num_partie"]));
+    function selectionner($idCarte) {
+        $this->db->query("update jeu set carte_selec=$idCarte where num_partie=?", Array($_SESSION["num_partie"]));
     }
 
-    function choixJoueur($numJoueur)
-    {
-        $_SESSION["choisi"] = $numJoueur;
+    function getSelectionner() {
+        $q = $this->db->query("select carte_selec from jeu where num_partie=?", Array($_SESSION["num_partie"]));
+        return $q->row()->carte_selec;
+    }
+
+    function application_regles($id_carte_choisie) {
+        $id_carte_selec = $this->getSelectionner();
+        //echo '$this->getValeur($id_carte_selec)';
+        switch ($this->getValeur($id_carte_selec)) {
+            case 1:
+                $_SESSION["choisi"] = $id_carte_choisie;
+                $this->setEtat("supposition");
+                break;
+            default:
+                $this->setEtat("pioche");
+                $this->passerJoueurSuivant();
+                break;
+                
+        }
     }
     
-    function reset(){
+    //retourne le joueur possédant la carte d'id $id_carte
+    function getPossesseurCarte($id_carte){
+        $q = $this->db->query("select joueur from carte where id_carte=?", Array($id_carte));
+    }
+    
+    function elimine($id_joueur){
+        $this->db->query("update joueurs set elimine = '1' where id=?", Array($id_joueur)); 
+    }
+    
+    function supposition($choix) {
+        echo 'CHOIX : '.$choix;
+        $valeurChoix = -1;
+        $cartes = array('case_fictive', 'case_fictive', 'pretre', 'baron', 'servante', 'prince', 'roi', 'comtesse', 'princesse');
+        for ($i = 0; $i < count($cartes); $i++) {
+            if ($cartes[$i] == $choix) {
+                $valeurChoix = $i;
+                break;
+            }
+        }
+        if ($valeurChoix != -1) {
+            $valeurMain = $this->getValeur($_SESSION["choisi"]);
+            if($valeurMain == $valeurChoix){
+                $joueur = $this->getPossesseurCarte($_SESSION["choisi"]);
+                $this->defausserCarteMain($_SESSION["choisi"]);
+                $this->elimine($joueur);
+                echo '<script>alert("Bien joué");</script>';
+
+            }
+            $this->setEtat("pioche");
+            $this->passerJoueurSuivant();
+        }else{
+            echo '<script>alert("entrée incorrecte, recommence fdp ");</script>';
+        }
+    }
+
+    function reset() {
         $this->db->query("TRUNCATE `carte`");
         $this->db->query("TRUNCATE `jeu`");
         $this->db->query("TRUNCATE `joueurs`");
         $this->db->query("insert into Jeu (manche) values (0);");
-
     }
+
 }

@@ -52,13 +52,13 @@
                         afficherJoueur1($tailleMain1, $main1, $taillePose1, $pose1);
                         break;
                     case 1:
-                        afficherAutres("mainJ2", $main2[0]->id_carte, $tailleMain2, "j2", $pose2);
+                        afficherAutres("mainJ2", $main2[0]->id_carte, $tailleMain2, "j2", $pose2, $actionActu);
                         break;
                     case 2:
-                        afficherAutres("mainJ3", $main3[0]->id_carte, $tailleMain3, "j3", $pose3);
+                        afficherAutres("mainJ3", $main3[0]->id_carte, $tailleMain3, "j3", $pose3, $actionActu);
                         break;
                     case 3:
-                        afficherAutres("mainJ4", $main4[0]->id_carte, $tailleMain4, "j4", $pose4);
+                        afficherAutres("mainJ4", $main4[0]->id_carte, $tailleMain4, "j4", $pose4, $actionActu);
                 }
             }
 
@@ -85,9 +85,9 @@
                 echo '</form>';
             }
 
-            function afficherAutres($id, $id_carte, $main, $num_joueur, $pose) {
+            function afficherAutres($id, $id_carte, $main, $num_joueur, $pose, $actionActu) {
 
-                echo '<form id="' . $id . '" method="post" action="'.base_url().'index.php/jeucontroller/action">';
+                echo '<form id="' . $id . '" method="post" action="'.base_url().'index.php/jeucontroller/action" onsubmit="return appliquerRegle()">';
                 echo '<table>';
                 if (count($pose) != 0) {
                     echo '<tr>';
@@ -99,17 +99,18 @@
                 if ($main != 0) {
                     echo '<tr>';
                     for ($i = 0; $i < $main; $i++) {
-                        echo '<td><input type="image" src="' . base_url() . 'images_cartes/dos_carte.png" name ="' . $num_joueur . '" value="' . $id_carte . '" id="carte" onclick="appliquerRegle()"/></td>';
+                        echo '<td><input type="image" src="' . base_url() . 'images_cartes/dos_carte.png" name ="' . $num_joueur . '" value="' . $id_carte . '" id="carte" /></td>';
                     }
                     echo '</tr>';
                 }
                 echo '</table>';
                 echo '<input id="supposition" type="hidden" name="supposition" value="">';
+                echo '<input id="etat" type="hidden" value="'.$actionActu.'">';
                 echo '</form>';
             }
             ?>
 
-            <input id="etat" type="hidden" value="<?php echo $actionActu ?>">
+            
 
         </div>
 
@@ -132,14 +133,15 @@
             function appliquerRegle(){
                 var etat = $("#etat").val();
                 switch(etat){
-                    case "garde":
+                    case "supposition":
                         var res = prompt("Quelle carte pensez-vous que c'est ?");
-                        ("#supposition").val(res);
+                        $("#supposition").val(res);
                         console.log("supposition écrite : " + ("#supposition").val());
                         break;
                     default:
-                        return;
+                        break;
                 }
+                return true;
             }
 
         </script>
