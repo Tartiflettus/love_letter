@@ -34,7 +34,8 @@
     $(document).ready(function(){
         setInterval(function () {
             console.log("maj");
-            $("#maj").load("/love_letter/index.php/jeucontroller/lobby" + ' #maj');
+            //$("#maj").load("/love_letter/index.php/jeucontroller/lobby" + ' #maj');
+            $(location).attr("href", "/love_letter/index.php/jeucontroller/lobby");
         }, 5000);
     });
 </script>

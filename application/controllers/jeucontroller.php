@@ -118,8 +118,13 @@ class JeuController extends CI_Controller {
     }
 
     public function lobby(){
-        $data["noms"] = $this->jeumodel->getNoms();
-        $this->load->view("pages/lobby", $data);
+        if($this->jeumodel->jeuEstLance()){
+            redirect("jeucontroller/view");
+        }
+        else{
+            $data["noms"] = $this->jeumodel->getNoms();
+            $this->load->view("pages/lobby", $data);
+        }
     }
 
     public function demarrer(){
