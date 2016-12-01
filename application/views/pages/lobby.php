@@ -10,6 +10,22 @@
                 <input type="submit" value="Démarrer">
             </form>
 
+            <table>
+                <?php
+
+                    foreach ($noms as $n){
+                        echo "<tr>";
+                        echo "<td>";
+
+                        echo $n->nom;
+
+                        echo "</td>";
+                        echo "</tr>";
+                    }
+
+                ?>
+            </table>
+
         </div>
 
 

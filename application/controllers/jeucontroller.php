@@ -118,7 +118,8 @@ class JeuController extends CI_Controller {
     }
 
     public function lobby(){
-        $this->load->view("pages/lobby");
+        $data["noms"] = $this->jeumodel->getNoms();
+        $this->load->view("pages/lobby", $data);
     }
 
     public function demarrer(){

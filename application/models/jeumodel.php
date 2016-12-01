@@ -245,7 +245,6 @@ class JeuModel extends CI_Model {
     //arg1 id carte pour poser
 
     function action($arg1) {
-        echo isset($_SESSION["num_partie"]) ? "set" : "pas set";
         $q = $this->db->query("select etat, joueur_actu from jeu where num_partie=?", Array($_SESSION["num_partie"]));
         $etat = $q->row()->etat;
         $actu = $q->row()->joueur_actu;
@@ -350,6 +349,12 @@ class JeuModel extends CI_Model {
     function getNomJoueur() {
         $q = $this->db->query("select nom from joueurs where id=?", Array($_SESSION["id"]));
         return $q->row()->nom;
+    }
+
+    function getNoms(){
+        $q = $this->db->query("select nom from joueurs where num_partie=?",
+            Array($_SESSION["num_partie"]));
+        return $q->result();
     }
 
 
