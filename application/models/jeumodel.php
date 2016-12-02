@@ -251,7 +251,6 @@ class JeuModel extends CI_Model {
 
         //ne rien faire si ce n'est pas notre tour
         if ($actu != $_SESSION["num_joueur"]) {
-            echo 'pas ton tour';
             echo 'Tricheur';
             return;
         }
@@ -319,19 +318,26 @@ class JeuModel extends CI_Model {
                 $this->selectionner($id_carte);
                 $this->setEtat("choix");
                 break;
-            case 2:
+            case 6:
+                $this->selectionner($id_carte);
+                $this->setEtat("choix");
+                break;
+            default:
+                $this->setEtat("pioche");
+                $this->passerJoueurSuivant();
+                break;
+            /*case 2:
                 break;
             case 3:
                 break;
             case 4:
-                
                 break;
             case 5:
                 break;
             case 6:
                 break;
             case 7:
-                break;
+                break;*/
         }
     }
 
@@ -390,12 +396,17 @@ class JeuModel extends CI_Model {
 
     function application_regles($id_carte_choisie) {
         $id_carte_selec = $this->getSelectionner();
-        //echo '$this->getValeur($id_carte_selec)';
+
         switch ($this->getValeur($id_carte_selec)) {
             case 1:
                 $_SESSION["choisi"] = $id_carte_choisie;
                 $this->setEtat("supposition");
                 break;
+            case 6:
+                //var_dump($id_carte_choisie);
+                $this->echangerCartesAvec($this->getPossesseurCarte($id_carte_choisie));
+                $this->setEtat("pioche");
+                $this->passerJoueurSuivant();
             default:
                 $this->setEtat("pioche");
                 $this->passerJoueurSuivant();
@@ -404,9 +415,10 @@ class JeuModel extends CI_Model {
         }
     }
     
-    //retourne le joueur possédant la carte d'id $id_carte
+    //retourne le joueur possï¿½dant la carte d'id $id_carte
     function getPossesseurCarte($id_carte){
         $q = $this->db->query("select joueur from carte where id_carte=?", Array($id_carte));
+        return $q->row()->joueur;
     }
     
     function elimine($id_joueur){
@@ -429,13 +441,13 @@ class JeuModel extends CI_Model {
                 $joueur = $this->getPossesseurCarte($_SESSION["choisi"]);
                 $this->defausserCarteMain($_SESSION["choisi"]);
                 $this->elimine($joueur);
-                echo '<script>alert("Bien joué");</script>';
+                echo '<script>alert("Bien jouï¿½");</script>';
 
             }
             $this->setEtat("pioche");
             $this->passerJoueurSuivant();
         }else{
-            echo '<script>alert("entrée incorrecte, recommence fdp ");</script>';
+            echo '<script>alert("entrï¿½e incorrecte, recommence fdp ");</script>';
         }
     }
 
@@ -444,6 +456,21 @@ class JeuModel extends CI_Model {
         $this->db->query("TRUNCATE `jeu`");
         $this->db->query("TRUNCATE `joueurs`");
         $this->db->query("insert into Jeu (manche) values (0);");
+    }
+
+    function echangerCartesAvec($idJoueur){
+        //echo "<script>alert('id joueur Ã  Ã©changer : '+$idJoueur);</script>";
+        //var_dump($idJoueur);
+        $q_autre = $this->db->query("select id_carte from carte where joueur=? and statut='main'",
+            Array($idJoueur));
+        $this->db->query("update carte set joueur=? where joueur=?",
+            Array($idJoueur, $_SESSION["id"]));
+
+        foreach ($q_autre->result() as $row){
+            $this->db->query("update carte set joueur=? where id_carte=?",
+                Array($_SESSION["id"], $row->id_carte));
+        }
+
     }
 
 }
