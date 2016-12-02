@@ -30,8 +30,6 @@ class JeuController extends CI_Controller {
 
         $data["nbjoueurs"] = $this->jeumodel->nbJoueurs();
 
-        echo $_SESSION["num_partie"];
-
         $this->load->view('pages/jeu.php', $data);
     }
 
