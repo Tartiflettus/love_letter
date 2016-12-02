@@ -7,11 +7,11 @@
  * Time: 23:01
  */
 session_start();
-/*if (session_start()) {
-    echo "<p>La session démarre</p>";
-} else {
-    echo "<strong>Problème démarrage session</strong>";
-}*/
+/* if (session_start()) {
+  echo "<p>La session démarre</p>";
+  } else {
+  echo "<strong>Problème démarrage session</strong>";
+  } */
 
 class JeuModel extends CI_Model {
 
@@ -26,12 +26,16 @@ class JeuModel extends CI_Model {
     }
 
     //piocher une carte dans la pioche
-    function piocher() {
+    function piocher($joueur = "session") {
         $q = $this->db->query("select id_carte from carte where num_partie=? and statut = 'pioche'", Array($_SESSION["num_partie"]));
         $indice = rand(0, $q->num_rows() - 1);
 
         if ($indice < $q->num_rows()) {
-            /* var_dump( */$this->db->query("update carte set statut='main', joueur=? where id_carte=?", Array($_SESSION["id"], $q->row($indice)->id_carte)) /* ) */;
+            if ($joueur == "session") {
+                $this->db->query("update carte set statut='main', joueur=? where id_carte=?", Array($_SESSION["id"], $q->row($indice)->id_carte));
+            } else {
+                $this->db->query("update carte set statut='main', joueur=? where id_carte=?", Array($joueur, $q->row($indice)->id_carte));
+            }
         } else {
             http_response_code(500);
             exit();
@@ -319,18 +323,13 @@ class JeuModel extends CI_Model {
                 $this->selectionner($id_carte);
                 $this->setEtat("choix");
                 break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                
-                break;
             case 5:
+                $this->selectionner($id_carte);
+                $this->setEtat("choix");
                 break;
-            case 6:
-                break;
-            case 7:
+            default:
+                $this->setEtat("pioche");
+                $this->passerJoueurSuivant();
                 break;
         }
     }
@@ -390,31 +389,38 @@ class JeuModel extends CI_Model {
 
     function application_regles($id_carte_choisie) {
         $id_carte_selec = $this->getSelectionner();
-        //echo '$this->getValeur($id_carte_selec)';
         switch ($this->getValeur($id_carte_selec)) {
             case 1:
                 $_SESSION["choisi"] = $id_carte_choisie;
                 $this->setEtat("supposition");
                 break;
+            case 5:
+                $joueur = $this->getPossesseurCarte($id_carte_choisie);
+                echo $joueur;
+                echo"coucou";
+                $this->db->query("update carte set statut='defausse' where joueur=?", Array($joueur));
+                $this->piocher($joueur);
+                $this->setEtat("pioche");
+                $this->passerJoueurSuivant();
+                break;
             default:
                 $this->setEtat("pioche");
                 $this->passerJoueurSuivant();
                 break;
-                
         }
     }
-    
+
     //retourne le joueur poss�dant la carte d'id $id_carte
-    function getPossesseurCarte($id_carte){
+    function getPossesseurCarte($id_carte) {
         $q = $this->db->query("select joueur from carte where id_carte=?", Array($id_carte));
     }
-    
-    function elimine($id_joueur){
-        $this->db->query("update joueurs set elimine = '1' where id=?", Array($id_joueur)); 
+
+    function elimine($id_joueur) {
+        $this->db->query("update joueurs set elimine = '1' where id=?", Array($id_joueur));
     }
-    
+
     function supposition($choix) {
-        echo 'CHOIX : '.$choix;
+        echo 'CHOIX : ' . $choix;
         $valeurChoix = -1;
         $cartes = array('case_fictive', 'case_fictive', 'pretre', 'baron', 'servante', 'prince', 'roi', 'comtesse', 'princesse');
         for ($i = 0; $i < count($cartes); $i++) {
@@ -425,16 +431,15 @@ class JeuModel extends CI_Model {
         }
         if ($valeurChoix != -1) {
             $valeurMain = $this->getValeur($_SESSION["choisi"]);
-            if($valeurMain == $valeurChoix){
+            if ($valeurMain == $valeurChoix) {
                 $joueur = $this->getPossesseurCarte($_SESSION["choisi"]);
                 $this->defausserCarteMain($_SESSION["choisi"]);
                 $this->elimine($joueur);
                 echo '<script>alert("Bien jou�");</script>';
-
             }
             $this->setEtat("pioche");
             $this->passerJoueurSuivant();
-        }else{
+        } else {
             echo '<script>alert("entr�e incorrecte, recommence fdp ");</script>';
         }
     }
