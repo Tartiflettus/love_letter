@@ -9,6 +9,9 @@
             }
 
             table{
+                /*position: absolute;*/
+                margin-left: auto;
+                margin-right: auto;
                 border-style: solid;
                 border-width: 2px;
                 border-collapse: collapse;
@@ -19,10 +22,22 @@
                 border-width: 2px;
             }
 
+            th{
+                text-align: center;
+                font-size: 20px;
+                padding-left: 20px;
+                padding-right: 20px;
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+
             td{
                 text-align: center;
                 border-style: solid;
                 border-width: 2px;
+                font-size: 25px;
+                font-family: impact;
+                padding: 50px;
             }
         </style>
 
@@ -35,6 +50,9 @@
             </form>
 
             <table>
+                <tr>
+                    <th colspan="2">Joueurs</th>
+                </tr>
                 <?php
 
                     foreach ($noms as $n){
