@@ -12,11 +12,15 @@
         </style>
     </head>
     <body>
+
         <form method="post" action="<?php echo base_url() ?>index.php/jeucontroller/reset">
             <input type="submit" value="Reset">
         </form>
         
         <div id="maj">
+
+            <span id="partieTerminee" hidden><?php echo $partieTerminee ? 1 : 0; ?></span>
+
             <h1>Jeu</h1>
             <p>Vous êtes <?php echo $nomJoueur; ?></p>
             <p>Action en cours : <?php echo $nomJoueurActu . " : " . $actionActu; ?></p>
@@ -130,9 +134,16 @@
              */
 
             $(document).ready(function () {
+
+
+
                 setInterval(function () {
                     console.log("maj");
                     $("#maj").load("/love_letter/index.php/jeucontroller/view" + ' #maj');
+                    var fini = $("#partieTerminee").html();
+                    if(fini == 1){
+                        $(location).attr("href", "/love_letter/index.php/jeucontroller/reset");
+                    }
                 }, 1000);
             });
 

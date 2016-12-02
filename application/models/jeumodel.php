@@ -395,6 +395,12 @@ class JeuModel extends CI_Model {
         return !$this->piocheEstVide();
     }
 
+    function partieTerminee(){
+        $q = $this->db->query("select count(*) as cnt from jeu where num_partie=?",
+            Array($_SESSION["num_partie"]));
+        return $q->row()->cnt == 0;
+    }
+
     function selectionner($idCarte) {
         $this->db->query("update jeu set carte_selec=$idCarte where num_partie=?", Array($_SESSION["num_partie"]));
     }
