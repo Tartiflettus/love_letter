@@ -310,11 +310,17 @@ class JeuModel extends CI_Model {
         return $q_carte->row()->valeur;
     }
 
+
+    //@brief règle lorsque l'on pose la carte
     function regle($id_carte) {
         $q_carte = $this->db->query("select valeur from carte where id_carte=?", Array($id_carte));
         $carte = $q_carte->row()->valeur;
         switch ($carte) {
             case 1:
+                $this->selectionner($id_carte);
+                $this->setEtat("choix");
+                break;
+            case 3:
                 $this->selectionner($id_carte);
                 $this->setEtat("choix");
                 break;
@@ -394,6 +400,8 @@ class JeuModel extends CI_Model {
         return $q->row()->carte_selec;
     }
 
+
+    //@brief application de l'action après le choix
     function application_regles($id_carte_choisie) {
         $id_carte_selec = $this->getSelectionner();
 
@@ -402,11 +410,17 @@ class JeuModel extends CI_Model {
                 $_SESSION["choisi"] = $id_carte_choisie;
                 $this->setEtat("supposition");
                 break;
+            case 3:
+                $this->baron($id_carte_choisie);
+                $this->setEtat("pioche");
+                $this->passerJoueurSuivant();
+                break;
             case 6:
                 //var_dump($id_carte_choisie);
                 $this->echangerCartesAvec($this->getPossesseurCarte($id_carte_choisie));
                 $this->setEtat("pioche");
                 $this->passerJoueurSuivant();
+                break;
             default:
                 $this->setEtat("pioche");
                 $this->passerJoueurSuivant();
@@ -471,6 +485,19 @@ class JeuModel extends CI_Model {
                 Array($_SESSION["id"], $row->id_carte));
         }
 
+    }
+
+    function baron($idCarteAutre){
+        $q = $this->db->query("select valeur from carte where id_carte=?",
+            Array($idCarteAutre));
+        $valAutre = $q->row()->valeur;
+
+        if($valAutre > 3){
+            $this->elimine($_SESSION["id"]);
+        }
+        else{
+            $this->elimine($this->getPossesseurCarte($idCarteAutre));
+        }
     }
 
 }
