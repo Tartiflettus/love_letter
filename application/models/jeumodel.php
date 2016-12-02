@@ -260,6 +260,11 @@ class JeuModel extends CI_Model {
     }
 
     function action($arg1) {
+        
+        if ($this->piocheEstVide()){
+            return;
+        }
+        
         $q = $this->db->query("select etat, joueur_actu from jeu where num_partie=?", Array($_SESSION["num_partie"]));
         $etat = $q->row()->etat;
         $actu = $q->row()->joueur_actu;
