@@ -78,7 +78,7 @@
             console.log("maj");
             //$("#maj").load("/love_letter/index.php/jeucontroller/lobby" + ' #maj');
             $(location).attr("href", "/love_letter/index.php/jeucontroller/lobby");
-        }, 5000);
+        }, 3000);
     });
 </script>
     </body>

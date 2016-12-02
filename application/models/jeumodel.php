@@ -27,6 +27,10 @@ class JeuModel extends CI_Model {
 
     //piocher une carte dans la pioche
     function piocher($joueur = "session") {
+        /*if($joueur != "session"){
+            echo "<script>alert('pioche adverse !');</script>";
+        }*/
+
         $q = $this->db->query("select id_carte from carte where num_partie=? and statut = 'pioche'", Array($_SESSION["num_partie"]));
         $indice = rand(0, $q->num_rows() - 1);
 
@@ -70,10 +74,10 @@ class JeuModel extends CI_Model {
         $q = $this->db->query("select nb_joueurs from jeu where num_partie=?", Array($_SESSION["num_partie"]));
 
 
-        echo "num_partie : " . $_SESSION["num_partie"];
+        //echo "num_partie : " . $_SESSION["num_partie"];
         $nb = $q->row()->nb_joueurs;
         $_SESSION["num_joueur"] = $nb - 1;
-        echo "<br/>num_joueur : " . $_SESSION["num_joueur"];
+        //echo "<br/>num_joueur : " . $_SESSION["num_joueur"];
 
 
         //ajouter effectivement le joueur
@@ -190,7 +194,7 @@ class JeuModel extends CI_Model {
         //manche : default 0
         if ($this->nbJoueurs() <= 2) {
             $this->deuxJoueurs();
-            echo "mode 2 joueurs séléctionné";
+            //echo "mode 2 joueurs séléctionné";
         }
         $this->defausseCarte();
         $this->distribuerCartes();
@@ -323,7 +327,6 @@ class JeuModel extends CI_Model {
                 $this->selectionner($id_carte);
                 $this->setEtat("choix");
                 break;
-
             case 3:
                 $this->selectionner($id_carte);
                 $this->setEtat("choix");
@@ -335,6 +338,11 @@ class JeuModel extends CI_Model {
             case 5:
                 $this->selectionner($id_carte);
                 $this->setEtat("choix");
+                break;
+            case 8:
+                $this->princesse();
+                $this->setEtat("pioche");
+                $this->passerJoueurSuivant();
                 break;
             default:
                 $this->setEtat("pioche");
@@ -408,10 +416,13 @@ class JeuModel extends CI_Model {
 
             case 5:
                 $joueur = $this->getPossesseurCarte($id_carte_choisie);
-                echo $joueur;
-                echo"coucou";
-                $this->db->query("update carte set statut='defausse' where joueur=?", Array($joueur));
+                //echo $joueur;
+                //echo"coucou";
+                $this->db->query("update carte set statut='defausse' where joueur=? and statut='main'", Array($joueur));
                 $this->piocher($joueur);
+                $this->setEtat("pioche");
+                $this->passerJoueurSuivant();
+                break;
             case 3:
                 $this->baron($id_carte_choisie);
                 $this->setEtat("pioche");
@@ -420,7 +431,6 @@ class JeuModel extends CI_Model {
             case 6:
                 //var_dump($id_carte_choisie);
                 $this->echangerCartesAvec($this->getPossesseurCarte($id_carte_choisie));
-
                 $this->setEtat("pioche");
                 $this->passerJoueurSuivant();
                 break;
@@ -442,7 +452,7 @@ class JeuModel extends CI_Model {
     }
 
     function supposition($choix) {
-        echo 'CHOIX : ' . $choix;
+        //echo 'CHOIX : ' . $choix;
         $valeurChoix = -1;
         $cartes = array('case_fictive', 'case_fictive', 'pretre', 'baron', 'servante', 'prince', 'roi', 'comtesse', 'princesse');
         for ($i = 0; $i < count($cartes); $i++) {
@@ -463,7 +473,7 @@ class JeuModel extends CI_Model {
             $this->setEtat("pioche");
             $this->passerJoueurSuivant();
         } else {
-            echo '<script>alert("entr�e incorrecte, recommence ");</script>';
+            echo '<script>alert("entr�e incorrecte, recommence ");</script>';
         }
     }
 
@@ -494,6 +504,11 @@ class JeuModel extends CI_Model {
         } else {
             $this->elimine($this->getPossesseurCarte($idCarteAutre));
         }
+    }
+
+
+    function princesse(){
+        $this->elimine($_SESSION["id"]);
     }
 
 }
