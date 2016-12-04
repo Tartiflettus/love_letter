@@ -27,9 +27,9 @@ class JeuModel extends CI_Model {
 
     //piocher une carte dans la pioche
     function piocher($joueur = "session") {
-        /*if($joueur != "session"){
-            echo "<script>alert('pioche adverse !');</script>";
-        }*/
+        /* if($joueur != "session"){
+          echo "<script>alert('pioche adverse !');</script>";
+          } */
 
         $q = $this->db->query("select id_carte from carte where num_partie=? and statut = 'pioche'", Array($_SESSION["num_partie"]));
         $indice = rand(0, $q->num_rows() - 1);
@@ -78,8 +78,6 @@ class JeuModel extends CI_Model {
         $nb = $q->row()->nb_joueurs;
         $_SESSION["num_joueur"] = $nb - 1;
         //echo "<br/>num_joueur : " . $_SESSION["num_joueur"];
-
-
         //ajouter effectivement le joueur
         $q = $this->db->query("insert into joueurs (nom, points, elimine, num_partie, num_joueur) values ('defaut', 0, 0, ?, ?)", Array($_SESSION["num_partie"], $nb - 1));
         $q = $this->db->query("select last_insert_id() as insert_id"); //rÃ©cupÃ©rer son id
@@ -252,7 +250,21 @@ class JeuModel extends CI_Model {
     //fonction principale, dont le comportement dÃ©pends de l'Ã©tat du jeu
     //arg1 id carte pour poser
 
+    function estElimine($num_joueur = "joueurActu") {
+        if ($num_joueur == "joueurActu") {
+            $q = $this->db->query("select elimine from joueurs where id=?", Array($_SESSION["id"]));
+        } else {
+            $q = $this->db->query("select elimine from joueurs where num_joueur=? and num_partie=?", Array($num_joueur, $_SESSION["num_partie"]));
+        }
+        return $q->row()->elimine;
+    }
+
     function action($arg1) {
+        
+        if ($this->piocheEstVide()){
+            return;
+        }
+        
         $q = $this->db->query("select etat, joueur_actu from jeu where num_partie=?", Array($_SESSION["num_partie"]));
         $etat = $q->row()->etat;
         $actu = $q->row()->joueur_actu;
@@ -261,7 +273,16 @@ class JeuModel extends CI_Model {
         if ($actu != $_SESSION["num_joueur"]) {
             echo 'Tricheur';
             return;
+        } else {
+            //passer au joueur suivant si éliminé
+            if ($this->estElimine()) {
+                echo 'Eliminé';
+                $this->setEtat("pioche");
+                $this->passerJoueurSuivant();
+                return;
+            }
         }
+
         switch ($etat) {
             case "pioche":
                 $this->piocher();
@@ -273,14 +294,65 @@ class JeuModel extends CI_Model {
                 $this->regle($tmp);
                 break;
             case "choix":
-                $this->application_regles($_POST["j2"]);
+                $joueur = "j2";
+                if(isset($_POST["j3"])){
+                    $joueur = "j3";
+                }else if(isset($_POST["j4"])){
+                    $joueur = "j3";
+                }
+                $this->application_regles($_POST["$joueur"]);
                 break;
             case "supposition":
                 $this->supposition($_POST["supposition"]);
                 break;
+            case "vue":
+                $this->setEtat("pioche");
+                $this->passerJoueurSuivant();
+                break;
             default:
                 return;
         }
+        //arrête le jeu si pioche vide à la fin du tour
+        if ($this->piocheEstVide() || $this->resteUnJoueur()) {
+            $this->finirPartie();
+            return;
+        }
+    }
+
+    function resteUnJoueur() {
+        $nb_joueurs = $this->nbJoueurs();
+        $non_elimines = 0;
+        for ($i = 0; $i < $nb_joueurs; $i++) {
+            if($this->estElimine($i) == 0){
+                $non_elimines++;
+            }
+        }
+        if($non_elimines < 2){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    function finirPartie() {
+        $num_gagnant = $this->designerGagnantManche();
+        echo 'Le gagnant est joueur : '.$num_gagnant;
+    }
+    
+    function designerGagnantManche(){
+        $nb_joueurs = $this->nbJoueurs();
+        $main = $this->getMainAutres(0);
+        $carte = $this->getValeur($main[0]->id_carte);
+        $joueur = 0;
+        for ($i = 1; $i < $nb_joueurs; $i++) {
+            $main = $this->getMainAutres($i);
+            $carte_actu = $this->getValeur($main[0]->id_carte);
+            if($carte_actu > $carte){
+                $carte = $carte_actu;
+                $joueur = $i;
+            }
+        }
+        return $joueur;
     }
 
     function countess() {
@@ -324,6 +396,10 @@ class JeuModel extends CI_Model {
         $carte = $q_carte->row()->valeur;
         switch ($carte) {
             case 1:
+                $this->selectionner($id_carte);
+                $this->setEtat("choix");
+                break;
+            case 2:
                 $this->selectionner($id_carte);
                 $this->setEtat("choix");
                 break;
@@ -419,11 +495,11 @@ class JeuModel extends CI_Model {
                 $_SESSION["choisi"] = $id_carte_choisie;
                 $this->setEtat("supposition");
                 break;
-
+            case 2:
+                $this->setEtat("vue");
+                break;
             case 5:
                 $joueur = $this->getPossesseurCarte($id_carte_choisie);
-                //echo $joueur;
-                //echo"coucou";
                 $this->db->query("update carte set statut='defausse' where joueur=? and statut='main'", Array($joueur));
                 $this->piocher($joueur);
                 $this->setEtat("pioche");
@@ -471,7 +547,7 @@ class JeuModel extends CI_Model {
             $valeurMain = $this->getValeur($_SESSION["choisi"]);
             if ($valeurMain == $valeurChoix) {
                 $joueur = $this->getPossesseurCarte($_SESSION["choisi"]);
-                $this->defausserCarteMain($_SESSION["choisi"]);
+                //$this->defausserCarteMain($_SESSION["choisi"]);
                 $this->elimine($joueur);
 
                 echo '<script>alert("Bien jouï¿½");</script>';
@@ -512,8 +588,7 @@ class JeuModel extends CI_Model {
         }
     }
 
-
-    function princesse(){
+    function princesse() {
         $this->elimine($_SESSION["id"]);
     }
 

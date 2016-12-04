@@ -16,7 +16,7 @@
         <form method="post" action="<?php echo base_url() ?>index.php/jeucontroller/reset">
             <input type="submit" value="Reset">
         </form>
-        
+
         <div id="maj">
 
             <span id="partieTerminee" hidden><?php echo $partieTerminee ? 1 : 0; ?></span>
@@ -41,7 +41,11 @@
 
             <?php
             echo '<form id="pioche" method="post" action="' . base_url() . 'index.php/jeucontroller/action">';
-            echo '<input type="image" src="' . base_url() . 'images_cartes/dos_carte.png" id="carte"/></td>';
+            if ($actionActu != "pioche") {
+                echo '<img src="' . base_url() . 'images_cartes/dos_carte.png" id="carte"/></td>';
+            } else {
+                echo '<input type="image" src="' . base_url() . 'images_cartes/dos_carte.png" id="carte"/></td>';
+            }
             echo '</form>';
 
             echo '<div id="milieu">';
@@ -59,20 +63,20 @@
             for ($j = 0; $j < $nbjoueurs; $j++) {
                 switch ($j) {
                     case 0:
-                        afficherJoueur1($tailleMain1, $main1, $taillePose1, $pose1);
+                        afficherJoueur1($tailleMain1, $main1, $taillePose1, $pose1, $actionActu);
                         break;
                     case 1:
-                        afficherAutres("mainJ2", $main2[0]->id_carte, $tailleMain2, "j2", $pose2, $actionActu);
+                        afficherAutres("mainJ2", $main2[0]->id_carte, $tailleMain2, "j2", $pose2, $actionActu, $main2);
                         break;
                     case 2:
-                        afficherAutres("mainJ3", $main3[0]->id_carte, $tailleMain3, "j3", $pose3, $actionActu);
+                        afficherAutres("mainJ3", $main3[0]->id_carte, $tailleMain3, "j3", $pose3, $actionActu, $main3);
                         break;
                     case 3:
-                        afficherAutres("mainJ4", $main4[0]->id_carte, $tailleMain4, "j4", $pose4, $actionActu);
+                        afficherAutres("mainJ4", $main4[0]->id_carte, $tailleMain4, "j4", $pose4, $actionActu, $main4);
                 }
             }
 
-            function afficherJoueur1($nb_cartes, $main, $taillePose, $pose) {
+            function afficherJoueur1($nb_cartes, $main, $taillePose, $pose, $actionActu) {
 
                 echo '<form id="mainJ1" method="post" action="' . base_url() . 'index.php/jeucontroller/action">';
                 echo '<table>';
@@ -87,7 +91,11 @@
                 if ($nb_cartes != 0) {
                     echo '<tr>';
                     for ($i = 0; $i < $nb_cartes; $i++) {
-                        echo '<td><input type="image" src="' . base_url($main[$i]->image) . '" name="c' . $i . '" value="' . $main[$i]->id_carte . '" id="carte"/></td>';
+                        if ($actionActu == "pose") {
+                            echo '<td><input type="image" src="' . base_url($main[$i]->image) . '" name="c' . $i . '" value="' . $main[$i]->id_carte . '" id="carte"/></td>';
+                        } else {
+                            echo '<td><img src="' . base_url($main[$i]->image) . '" name="c' . $i . '" value="' . $main[$i]->id_carte . '" id="carte"/></td>';
+                        }
                     }
                     echo '</tr>';
                 }
@@ -95,9 +103,9 @@
                 echo '</form>';
             }
 
-            function afficherAutres($id, $id_carte, $main, $num_joueur, $pose, $actionActu) {
+            function afficherAutres($id, $id_carte, $main, $num_joueur, $pose, $actionActu, $main2) {
 
-                echo '<form id="' . $id . '" method="post" action="'.base_url().'index.php/jeucontroller/action" onsubmit="return appliquerRegle()">';
+                echo '<form id="' . $id . '" method="post" action="' . base_url() . 'index.php/jeucontroller/action" onsubmit="return appliquerRegle()">';
                 echo '<table>';
                 if (count($pose) != 0) {
                     echo '<tr>';
@@ -109,18 +117,23 @@
                 if ($main != 0) {
                     echo '<tr>';
                     for ($i = 0; $i < $main; $i++) {
-                        echo '<td><input type="image" src="' . base_url() . 'images_cartes/dos_carte.png" name ="' . $num_joueur . '" value="' . $id_carte . '" id="carte" /></td>';
+                        if ($actionActu != "pioche" && $actionActu != "pose") {
+                            echo '<td><input type="image" src="' . base_url() . 'images_cartes/dos_carte.png" name ="' . $num_joueur . '" value="' . $id_carte . '" id="carte" /></td>';
+                        } else {
+                            echo '<td><img src="' . base_url() . 'images_cartes/dos_carte.png" name ="' . $num_joueur . '" value="' . $id_carte . '" id="carte" /></td>';
+                        }
                     }
                     echo '</tr>';
                 }
                 echo '</table>';
                 echo '<input id="supposition" type="hidden" name="supposition" value="">';
-                echo '<input id="etat" type="hidden" value="'.$actionActu.'">';
+                echo '<input id="etat" type="hidden" value="' . $actionActu . '">';
+                echo '<input id="chemin" type="hidden" value="' . base_url($main2[0]->image) . '">';
                 echo '</form>';
             }
             ?>
 
-            
+
 
         </div>
 
@@ -147,13 +160,17 @@
                 }, 1000);
             });
 
-            function appliquerRegle(){
+            function appliquerRegle() {
                 var etat = $("#etat").val();
-                switch(etat){
+                var chemin = $("#chemin").val();
+                switch (etat) {
                     case "supposition":
                         var res = prompt("Quelle carte pensez-vous que c'est ?");
                         $("#supposition").val(res);
                         console.log("supposition écrite : " + ("#supposition").val());
+                        break;
+                    case "vue":
+                        openPopup(chemin);
                         break;
                     default:
                         break;
@@ -161,6 +178,16 @@
                 return true;
             }
 
+            function openPopup(chemin) {
+                console.log("popup");
+                html = '<html> <head> <title>Main du joueur</title> </head> <body onBlur="top.close()">\n\
+        <IMG src="' + chemin + '" BORDER=0 NAME=mainJoueur onLoad="window.resizeTo(document.mainJoueur.width + 50, document.mainJoueur.height + 80)">\n\
+</body></html>';
+                popupImage = window.open('', '_blank', 'toolbar=0, location=0 ,  directories=0, menuBar=0, scrollbars=0, resizable=1');
+                popupImage.document.open();
+                popupImage.document.write(html);
+                popupImage.document.close();
+            }
         </script>
 
     </body>
