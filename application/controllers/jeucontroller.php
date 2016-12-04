@@ -30,6 +30,8 @@ class JeuController extends CI_Controller {
 
         $data["nbjoueurs"] = $this->jeumodel->nbJoueurs();
 
+        $data["protege0"] = $this->jeumodel->estProtege();
+
         $this->load->view('pages/jeu.php', $data);
     }
 

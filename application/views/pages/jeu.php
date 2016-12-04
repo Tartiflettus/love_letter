@@ -59,7 +59,7 @@
             for ($j = 0; $j < $nbjoueurs; $j++) {
                 switch ($j) {
                     case 0:
-                        afficherJoueur1($tailleMain1, $main1, $taillePose1, $pose1, $actionActu);
+                        afficherJoueur1($tailleMain1, $main1, $taillePose1, $pose1, $actionActu, $protege0);
                         break;
                     case 1:
                         afficherAutres("mainJ2", $main2[0]->id_carte, $tailleMain2, "j2", $pose2, $actionActu, $main2);
@@ -72,7 +72,7 @@
                 }
             }
 
-            function afficherJoueur1($nb_cartes, $main, $taillePose, $pose, $actionActu) {
+            function afficherJoueur1($nb_cartes, $main, $taillePose, $pose, $actionActu, $protege) {
 
                 echo '<form id="mainJ1" method="post" action="' . base_url() . 'index.php/jeucontroller/action">';
                 echo '<table>';
@@ -87,6 +87,9 @@
                 if ($nb_cartes != 0) {
                     echo '<tr>';
                     for ($i = 0; $i < $nb_cartes; $i++) {
+                        if ($protege == 1) {
+                            echo "protege";
+                        }
                         if ($actionActu == "pose") {
                             echo '<td><input type="image" src="' . base_url($main[$i]->image) . '" name="c' . $i . '" value="' . $main[$i]->id_carte . '" id="carte"/></td>';
                         } else {
