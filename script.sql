@@ -12,6 +12,7 @@ create table Joueurs (
 	adresse varchar(10),
 	points int default 0,
 	elimine int default 0,
+        protege int default 0,
 	num_joueur int
 );
 

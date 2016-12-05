@@ -244,7 +244,6 @@ class JeuModel extends CI_Model {
 
     function poser($idCarte) {
         $this->db->query("update carte set statut='pose' where id_carte=?", Array($idCarte));
-        //$this->passerJoueurSuivant();
     }
 
     //fonction principale, dont le comportement dÃ©pends de l'Ã©tat du jeu
@@ -260,11 +259,11 @@ class JeuModel extends CI_Model {
     }
 
     function action($arg1) {
-        
-        if ($this->piocheEstVide()){
+
+        if ($this->piocheEstVide()) {
             return;
         }
-        
+
         $q = $this->db->query("select etat, joueur_actu from jeu where num_partie=?", Array($_SESSION["num_partie"]));
         $etat = $q->row()->etat;
         $actu = $q->row()->joueur_actu;
@@ -285,6 +284,10 @@ class JeuModel extends CI_Model {
 
         switch ($etat) {
             case "pioche":
+                //enlève la protection en début de tour 
+                if ($this->estProtege() == 1) {
+                    $this->db->query("update joueurs set protege=? where id=?", array(0, $_SESSION["id"]));
+                }
                 $this->piocher();
                 $this->countess();
                 break;
@@ -295,9 +298,9 @@ class JeuModel extends CI_Model {
                 break;
             case "choix":
                 $joueur = "j2";
-                if(isset($_POST["j3"])){
+                if (isset($_POST["j3"])) {
                     $joueur = "j3";
-                }else if(isset($_POST["j4"])){
+                } else if (isset($_POST["j4"])) {
                     $joueur = "j3";
                 }
                 $this->application_regles($_POST["$joueur"]);
@@ -323,23 +326,23 @@ class JeuModel extends CI_Model {
         $nb_joueurs = $this->nbJoueurs();
         $non_elimines = 0;
         for ($i = 0; $i < $nb_joueurs; $i++) {
-            if($this->estElimine($i) == 0){
+            if ($this->estElimine($i) == 0) {
                 $non_elimines++;
             }
         }
-        if($non_elimines < 2){
+        if ($non_elimines < 2) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
-    
+
     function finirPartie() {
         $num_gagnant = $this->designerGagnantManche();
-        echo 'Le gagnant est joueur : '.$num_gagnant;
+        echo 'Le gagnant est joueur : ' . $num_gagnant;
     }
-    
-    function designerGagnantManche(){
+
+    function designerGagnantManche() {
         $nb_joueurs = $this->nbJoueurs();
         $main = $this->getMainAutres(0);
         $carte = $this->getValeur($main[0]->id_carte);
@@ -347,7 +350,7 @@ class JeuModel extends CI_Model {
         for ($i = 1; $i < $nb_joueurs; $i++) {
             $main = $this->getMainAutres($i);
             $carte_actu = $this->getValeur($main[0]->id_carte);
-            if($carte_actu > $carte){
+            if ($carte_actu > $carte) {
                 $carte = $carte_actu;
                 $joueur = $i;
             }
@@ -407,6 +410,11 @@ class JeuModel extends CI_Model {
                 $this->selectionner($id_carte);
                 $this->setEtat("choix");
                 break;
+            case 4:
+                $this->db->query("update joueurs set protege=? where id=?", array(1, $_SESSION["id"]));
+                $this->setEtat("pioche");
+                $this->passerJoueurSuivant();
+                break;
             case 6:
                 $this->selectionner($id_carte);
                 $this->setEtat("choix");
@@ -425,6 +433,15 @@ class JeuModel extends CI_Model {
                 $this->passerJoueurSuivant();
                 break;
         }
+    }
+
+    function estProtege($joueur = "actu") {
+        if ($joueur == "actu") {
+            $q = $this->db->query("select protege from joueurs where id=?", Array($_SESSION["id"]));
+        } else {
+            $q = $this->db->query("select protege from joueurs where num_joueur=? and num_partie=?", Array($joueur, $_SESSION["num_partie"]));
+        }
+        return $q->row()->protege;
     }
 
     function setEtat($etat) {
@@ -486,12 +503,29 @@ class JeuModel extends CI_Model {
         return $q->row()->carte_selec;
     }
 
+    //retourne si est protege grace a l'id du joueur
+    function estProtegeAutre($id_joueur){
+        $q = $this->db->query("select protege from joueurs where id=?", array($id_joueur));
+        return $q->row()->protege;
+    }
+    
     //@brief application de l'action aprÃ¨s le choix
     function application_regles($id_carte_choisie) {
         $id_carte_selec = $this->getSelectionner();
-
+        $joueur = $this->getPossesseurCarte($id_carte_choisie);
+        
+        //ne pas appliquer règles si joueur choisi est protégé
+        if ($this->estProtegeAutre($joueur)) {
+            if ($this->nbJoueurs() == 2) {
+                $this->setEtat("pioche");
+                $this->passerJoueurSuivant(); 
+            }
+            return;
+        }
+        
         switch ($this->getValeur($id_carte_selec)) {
             case 1:
+                
                 $_SESSION["choisi"] = $id_carte_choisie;
                 $this->setEtat("supposition");
                 break;
@@ -499,7 +533,6 @@ class JeuModel extends CI_Model {
                 $this->setEtat("vue");
                 break;
             case 5:
-                $joueur = $this->getPossesseurCarte($id_carte_choisie);
                 $this->db->query("update carte set statut='defausse' where joueur=? and statut='main'", Array($joueur));
                 $this->piocher($joueur);
                 $this->setEtat("pioche");
@@ -511,7 +544,6 @@ class JeuModel extends CI_Model {
                 $this->passerJoueurSuivant();
                 break;
             case 6:
-                //var_dump($id_carte_choisie);
                 $this->echangerCartesAvec($this->getPossesseurCarte($id_carte_choisie));
                 $this->setEtat("pioche");
                 $this->passerJoueurSuivant();
