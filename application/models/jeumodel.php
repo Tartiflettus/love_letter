@@ -273,9 +273,9 @@ class JeuModel extends CI_Model {
             echo 'Tricheur';
             return;
         } else {
-            //passer au joueur suivant si éliminé
+            //passer au joueur suivant si ï¿½liminï¿½
             if ($this->estElimine()) {
-                echo 'Eliminé';
+                echo 'Eliminï¿½';
                 $this->setEtat("pioche");
                 $this->passerJoueurSuivant();
                 return;
@@ -284,7 +284,7 @@ class JeuModel extends CI_Model {
 
         switch ($etat) {
             case "pioche":
-                //enlève la protection en début de tour 
+                //enlï¿½ve la protection en dï¿½but de tour 
                 if ($this->estProtege() == 1) {
                     $this->db->query("update joueurs set protege=? where id=?", array(0, $_SESSION["id"]));
                 }
@@ -315,7 +315,7 @@ class JeuModel extends CI_Model {
             default:
                 return;
         }
-        //arrête le jeu si pioche vide à la fin du tour
+        //arrï¿½te le jeu si pioche vide ï¿½ la fin du tour
         if ($this->piocheEstVide() || $this->resteUnJoueur()) {
             $this->finirPartie();
             return;
@@ -514,7 +514,7 @@ class JeuModel extends CI_Model {
         $id_carte_selec = $this->getSelectionner();
         $joueur = $this->getPossesseurCarte($id_carte_choisie);
         
-        //ne pas appliquer règles si joueur choisi est protégé
+        //ne pas appliquer rï¿½gles si joueur choisi est protï¿½gï¿½
         if ($this->estProtegeAutre($joueur)) {
             if ($this->nbJoueurs() == 2) {
                 $this->setEtat("pioche");
@@ -602,10 +602,10 @@ class JeuModel extends CI_Model {
         //echo "<script>alert('id joueur Ã  Ã©changer : '+$idJoueur);</script>";
         //var_dump($idJoueur);
         $q_autre = $this->db->query("select id_carte from carte where joueur=? and statut='main'", Array($idJoueur));
-        $this->db->query("update carte set joueur=? where joueur=?", Array($idJoueur, $_SESSION["id"]));
+        $this->db->query("update carte set joueur=? where joueur=? and statut='main'", Array($idJoueur, $_SESSION["id"]));
 
         foreach ($q_autre->result() as $row) {
-            $this->db->query("update carte set joueur=? where id_carte=?", Array($_SESSION["id"], $row->id_carte));
+            $this->db->query("update carte set joueur=? where id_carte=? and statut='main'", Array($_SESSION["id"], $row->id_carte));
         }
     }
 
